@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -27,7 +28,14 @@ namespace Server
             {
                 ContentType = "text/html",
                 StatusCode = (int)HttpStatusCode.OK,
-                Content = "<html><body>Welcome</body></html>"
+                Content = @" 
+                    <title>My Chat</title>
+                    <style type='text/css'>
+                        button{color: blue;}
+                    </style>
+                    <h1> Welcome </h1>
+                    <p>Here are available chats: <button>Open Forum</button></p>
+                    "
             };
         }
 
