@@ -1,8 +1,13 @@
 <html>
 	<head>
-		<h1>Welcome to Chatting</h1>
+		<title>My chat</title>
 	</head>
 	<body>
-		
+		<h2>Welcome to Chatting</h2>
+
+		<form action=>
+
+		</form>
+
 	</body>
 </html>

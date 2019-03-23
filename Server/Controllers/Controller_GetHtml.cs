@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,18 +25,18 @@ namespace Server
         [HttpGet("{id}")]
         public ContentResult Get(int id)
         {
+            string text;
+            var fileStream = new FileStream(@"Start_html.txt", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
             return new ContentResult
             {
                 ContentType = "text/html",
                 StatusCode = (int)HttpStatusCode.OK,
-                Content = @" 
-                    <title>My Chat</title>
-                    <style type='text/css'>
-                        button{color: blue;}
-                    </style>
-                    <h1> Welcome </h1>
-                    <p>Here are available chats: <button>Open Forum</button></p>
-                    "
+                Content = text
             };
         }
 
