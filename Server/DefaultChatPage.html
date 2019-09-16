@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <script language="javascript">
+
+        var messagesOnPage = ["Your messages will be displayed here.."];
+        var sessionId = "";
+        var chatName = "";
+        var nickname = "";
+
+        function OnLoad() {
+            messagesOnPage = ["Your messages will be displayed here.."];
+            var xhttp = new XMLHttpRequest();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            chatName = urlParams.get("chatName");
+            nickname = urlParams.get("nickname");
+
+            document.getElementById("header").innerHTML = chatName;
+            document.getElementById("nickname").innerHTML = "Nickname: " + nickname;
+            if (nickname == "") { document.getElementById("nickname").innerHTML = "Nickname: anonymous";}
+            document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var jsonData = JSON.parse(xhttp.responseText);
+
+                    sessionId = jsonData.sessionId;
+
+                    messages = jsonData.lastMessages;
+
+                    for (var i = 0; i < messages.length; i++) {
+                        var message = messages[i];
+                        messagesOnPage[i] = message.time + "//    " + message.authorNickName + ":  " + message.body;
+                    }
+
+                    document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+
+                    getLastMessage();
+                }
+            };
+            xhttp.open("GET", "/api/Chat/LoadChat" + "?chatName=" + chatName, true);
+            xhttp.send();
+        }
+
+        function getLastMessage() {
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var message = JSON.parse(xhttp.responseText);
+
+                    messagesOnPage.push(message.time + "//    " + message.authorNickName + ":  " + message.body);
+
+                    document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+
+                    getLastMessage();
+                }
+            };
+            xhttp.open("GET", "/api/Chat/GetNew" + "?sessionId=" + sessionId + "&chatName=" + chatName, true);
+            xhttp.send();
+        }
+
+        function sendMessage() {
+            var http = new XMLHttpRequest();
+            var url = '/api/Chat/SendMessage';
+            var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName;
+            http.open('POST', url + params, true);
+
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            http.send(params);
+
+            //params, in 2 places ???? XXX
+        }
+        function BBremove() {
+            var http = new XMLHttpRequest();
+            var url = '/api/Chat/BBremove';
+            var params = "?sessionId=" + sessionId;
+            http.open('POST', url + params, true);
+
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            http.send();
+        }
+
+        function loadDefault() {
+            BBremove();
+
+            var url = "/api/Default/";
+            var params = "";
+
+            window.location.href = url + params;
+        }
+        function refreshPage() {
+            BBremove();
+
+            var url = "/api/Chat/";
+            var params = "?chatName=" + chatName + "&nickname=" + nickname;
+
+            window.location.href = url + params;
+        }
+
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        [class*="col-"] {
+            padding: 15px;
+        }
+
+        .col-1 {
+            float: left;
+            width: 15.0%;
+        }
+
+        .col-2 {
+            float: right;
+            width: 15.0%;
+        }
+
+        .col-3 {
+            width: 10%;
+        }
+
+        .col-4 {
+            width: 33.33%;
+        }
+
+        .col-5 {
+            width: 41.66%;
+        }
+
+        html {
+            font-family: "Lucida Sans", sans-serif;
+        }
+
+        .header {
+            background-color: #9933cc;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        .menu ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            padding: 8px;
+            margin-bottom: 7px;
+            background-color: #33b5e5;
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+            .menu li:hover {
+                background-color: #0099cc;
+            }
+
+        .chatWindow {
+            width: 400px;
+            height: 500px;
+        }
+
+        .chatsWindow {
+            width: 400px;
+            height: 200px;
+        }
+    </style>
+
+    <title>Chat Server</title>
+
+</head>
+
+<body onload="OnLoad()">
+    <div class="header">
+        <h1 id="header">Server</h1>
+        <h4 id="nickname"></h4>
+    </div>
+
+    <div class="row">
+        <div class="col-1 menu">
+            <div id="chatWindow" class="chatWindow">
+
+            </div>
+
+            <ul>
+                <li>Message:<input id="messageInput" type="text" name="text"><br></li>
+                <li><button id="SendButton" onclick=sendMessage()>Send message</button><br><br></li>
+                <li><button id="RefreshButton" onclick=refreshPage()>Refresh</button></li>
+                <li><button id="HomeButton" onclick=loadDefault()>Home</button></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

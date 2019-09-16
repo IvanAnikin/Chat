@@ -59,22 +59,5 @@ namespace Server.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;html&gt;
-        ///	&lt;head&gt;
-        ///		&lt;h1&gt;Welcome to Chatting&lt;/h1&gt;
-        ///	&lt;/head&gt;
-        ///	&lt;body&gt;
-        ///		
-        ///	&lt;/body&gt;
-        ///&lt;/html&gt;
-        ///.
-        /// </summary>
-        internal static string Start_html {
-            get {
-                return ResourceManager.GetString("Start_html", resourceCulture);
-            }
-        }
     }
 }
