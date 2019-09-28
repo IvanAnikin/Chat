@@ -1,26 +1,25 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GamesController : ControllerBase
+    public class VideoController : ControllerBase
     {
         [HttpGet]
         public ContentResult Get()
         {
 
             string text;
-            var fileStream = new FileStream(@"GamesPage.html", FileMode.Open, FileAccess.Read);
+            var fileStream = new FileStream(@"VideoPage.html", FileMode.Open, FileAccess.Read);
             using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
             {
                 text = streamReader.ReadToEnd();
@@ -33,5 +32,25 @@ namespace Server.Controllers
                 Content = text
             };
         }
+
+        [HttpGet("face-api")]
+        public ContentResult FaceApi()
+        {
+            StreamReader streamReader = new StreamReader(@"face-api.min.js");
+            string script = streamReader.ReadToEnd();
+            streamReader.Close();
+
+            return Content(script);
+
+        }
+
+        [HttpGet("string")]
+        public string String()
+        {
+            return "Hey there";
+
+        }
+
+
     }
 }

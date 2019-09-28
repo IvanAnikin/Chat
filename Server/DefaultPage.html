@@ -107,7 +107,15 @@
         }
 
         function loadGamesPage() {
-            var url = "/api/Games/";
+            BBCremove();
+            var url = "/api/Games";
+
+            window.location.href = url;
+        }
+
+        function loadVideoPage() {
+            BBCremove();
+            var url = "/api/Video";
 
             window.location.href = url;
         }
@@ -218,8 +226,10 @@
         </div>
 
         <div class="col-2">
-            <p id="myParagraph3">Want to play some game? Click down here.</p>
-            <button onclick="loadGamesPage()" id="myButtonStart">Start</button>
+            <p id="myParagraph3">Want to play a game? Click down here.</p>
+            <button onclick="loadGamesPage()" id="myButtonStart">Game</button>
+            <p id="myParagraph3">Want to have some fun with your camera? Click under the text.</p>
+            <button onclick="loadVideoPage()" id="myButtonStart">Video</button>
         </div>
 
 

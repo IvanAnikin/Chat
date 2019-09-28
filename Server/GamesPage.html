@@ -17,12 +17,14 @@
             var myPar2 = document.getElementById("myParagraph2");
             var myPar3 = document.getElementById("myParagraph3");
             var myBtnS = document.getElementById("myButtonStart");
+            var refreshBtn = document.getElementById("RefreshButton");
 
             myBtnA.style.visibility = "visible";
             myPar.style.visibility = "visible";
             myPar2.style.visibility = "visible";
             myPar3.style.visibility = "hidden";
             myBtnS.style.visibility = "hidden";
+            refreshBtn.style.visibility = "visible";
 
             myGamePiece = new component(30, 30, "red", 10, 120);
             myGamePiece.gravity = 0.05;
@@ -137,6 +139,12 @@
             myGamePiece.gravity = n;
         }
 
+        function refreshPage() {
+            var url = "/api/Games";
+
+            window.location.href = url;
+        }
+
 
     </script>
 
@@ -220,22 +228,30 @@
 
 </head>
 
-<body onload="OnLoad()">
+<body>
+    <div class="header">
+        <h1>Games</h1>
+    </div>
 
-    
-    <div class="col-2">
+    <div class="row">
+        <div class="col-1">
 
-        <div id="gameDiv">
+
+            <div id="gameDiv">
+
+            </div>
+
+            <button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)" id="myBtnA" style="visibility : hidden">ACCELERATE</button>
+            <button id="RefreshButton" onclick=refreshPage() style="visibility : hidden">Refresh</button>
+            <p id="myParagraph" style="visibility : hidden">Use the ACCELERATE button to stay in the air</p>
+            <p id="myParagraph2" style="visibility : hidden">How long can you stay alive?</p>
+            <p id="myParagraph3">Bored and want to play a game? Click down here.</p>
+            <button onclick="startGame()" id="myButtonStart">Start</button>
+
 
         </div>
-
-        <button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)" id="myBtnA" style="visibility : hidden">ACCELERATE</button>
-        <p id="myParagraph" style="visibility : hidden">Use the ACCELERATE button to stay in the air</p>
-        <p id="myParagraph2" style="visibility : hidden">How long can you stay alive?</p>
-        <p id="myParagraph3">Bored and want to play a game? Click down here.</p>
-        <button onclick="startGame()" id="myButtonStart">Start</button>
-
     </div>
+    
 
 </body>
 </html>
