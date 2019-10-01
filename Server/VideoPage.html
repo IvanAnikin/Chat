@@ -7,25 +7,9 @@
 
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <script type='text/javascript' async src="https://cdn.jsdelivr.net/gh/WebDevSimplified/Face-Detection-JavaScript@master/face-api.min.js"></script>
+    <script type='text/javascript' src="/face-api.min.js"></script>
 
-    <script defer>
-
-        const video = document.getElementById('video')
-            
-        function startVideo() {
-            navigator.getUserMedia(
-
-                { video: {} },
-
-                stream => video.srcObject = stream,
-                err => console.error(err)
-            )
-        }
-
-        startVideo();
-
-    </script>
+    <script defer type="text/javascript" src="/videoScript.js"></script>
 
     <style>
         * {
