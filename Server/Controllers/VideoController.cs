@@ -33,22 +33,30 @@ namespace Server.Controllers
             };
         }
 
-        [HttpGet("face-api")]
-        public ContentResult FaceApi()
+        [HttpGet("images")]
+        public ContentResult Images()
         {
-            StreamReader streamReader = new StreamReader(@"face-api.min.js");
-            string script = streamReader.ReadToEnd();
-            streamReader.Close();
 
-            return Content(script);
+            string text;
+            var fileStream = new FileStream(@"VideoImagesPage.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
 
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
         }
 
         [HttpGet("string")]
         public string String()
         {
-            return "Hey there";
 
+            return "STRING";
         }
 
 

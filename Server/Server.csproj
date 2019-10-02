@@ -31,6 +31,9 @@
     <None Update="face-api.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="VideoImagesPage.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="VideoPage.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -47,10 +50,15 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="wwwroot\labeled_images\" />
+    <Folder Include="wwwroot\models\" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="wwwroot\face-api.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\imagesScript.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\videoScript.js">
