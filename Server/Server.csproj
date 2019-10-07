@@ -52,6 +52,7 @@
     <Folder Include="Resources\" />
     <Folder Include="wwwroot\labeled_images\" />
     <Folder Include="wwwroot\models\" />
+    <Folder Include="wwwroot\models2\" />
   </ItemGroup>
 
   <ItemGroup>

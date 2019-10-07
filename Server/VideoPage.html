@@ -1,104 +1,47 @@
-﻿<!DOCTYPE html>
-<html>
+﻿
+<!DOCTYPE html>
+
+<html lang="en">
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <script type='text/javascript' src="/face-api.min.js"></script>
+    <title>Document</title>
 
-    <script defer type="text/javascript" src="/videoScript.js"></script>
+    <script defer src="/face-api.min.js"></script>
+
+    <script defer src="/videoScript.js"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
 
-        .row::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        [class*="col-"] {
-            padding: 15px;
-        }
-
-        .col-1 {
-            float: left;
-            width: 15.0%;
-        }
-
-        .col-2 {
-            float: right;
-            width: 15.0%;
-        }
-
-        .col-3 {
-            width: 10%;
-        }
-
-        .col-4 {
-            width: 33.33%;
-        }
-
-        .col-5 {
-            width: 41.66%;
-        }
-
-        html {
-            font-family: "Lucida Sans", sans-serif;
-        }
-
-        .header {
-            background-color: #9933cc;
-            color: #ffffff;
-            padding: 15px;
-        }
-
-        .menu ul {
-            list-style-type: none;
+        body {
             margin: 0;
             padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .menu li {
-            padding: 8px;
-            margin-bottom: 7px;
-            background-color: #33b5e5;
-            color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        }
 
-            .menu li:hover {
-                background-color: #0099cc;
-            }
 
-        .chatWindow {
-            width: 400px;
-            height: 500px;
-        }
-
-        .chatsWindow {
-            width: 400px;
-            height: 200px;
+        canvas {
+            position: absolute;
         }
     </style>
 
-    <title>Chat Server</title>
-
 </head>
 
-<body >
-    <div class="header">
-        <h1>Video stuff</h1>
-    </div>
+<body>
 
-    <div class="row">
-        <video id="video" width="720" height="560" autoplay muted></video>
-    </div>
-    
+    <video id="video" width="720" height="560" autoplay muted></video>
+
 </body>
+
 </html>
