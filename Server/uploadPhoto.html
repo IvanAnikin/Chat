@@ -1,0 +1,113 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8"/>
+
+        <title>Photo upload</title>
+
+        <script src="/azure-storage.blob.min.js" charset="utf-8"></script>
+
+        <script>
+            // Blob-related code goes here
+
+            //import * as azureStorageBlob from '';
+
+            function onLoad(){
+                const account = {
+                    name: "notesaccount"
+                };
+                var sas = document.getElementById('sasInput').value;
+                var blobName = "duckTest.jpg";
+
+                const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+                
+                var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+                var containerName = 'js-photo-upload-test';
+
+                document.getElementById('create-button').addEventListener('click', () => {
+
+                    sas = document.getElementById('sasInput').value;
+                    blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+                    blobService.createContainerIfNotExists(containerName, (error, container) => {
+                        if (error) {
+                            // Handle create container error
+                        } else {
+                            console.log(container.name);
+                        }
+                    });
+
+                });
+
+                document.getElementById('upload-button').addEventListener('click', () => {
+
+                    const file = document.getElementById('fileinput').files[0];
+
+                    blobService.createBlockBlobFromBrowserFile(containerName, 
+                                                                file.name, 
+                                                                file, 
+                                                                (error, result) => {
+                                                                    if(error) {
+                                                                        // Handle blob error
+                                                                    } else {
+                                                                        console.log('Upload is successful');
+                                                                    }
+                                                                });
+
+                });
+
+                document.getElementById('list-button').addEventListener('click', () => {
+
+                    blobService.listBlobsSegmented(containerName, null, (error, results) => {
+                        if (error) {
+                            // Handle list blobs error
+                        } else {
+                            results.entries.forEach(blob => {
+                                console.log(blob.name);
+                            });
+                        }
+                    });
+    
+                });
+
+                document.getElementById('delete-button').addEventListener('click', () => {
+
+                    var blob = blobName;
+                    blobService.deleteBlobIfExists(containerName, blob, (error, result) => {
+                        if (error) {
+                            // Handle delete blob error
+                        } else {
+                            console.log('Blob deleted successfully');
+                        }
+                    });
+    
+                });
+            }
+
+        </script>
+
+    </head>
+
+    <body onload="onLoad()">
+        <button id="create-button">Create Container</button>
+
+        <input type="file" id="fileinput" />
+        <button id="upload-button">Upload</button>
+
+        <button id="list-button">List</button>
+
+        <button id="delete-button">Delete</button>
+
+        <form>
+            SAS:<br>
+            <input type="text" id="sasInput"><br>
+        </form>
+
+    </body>
+
+</html>

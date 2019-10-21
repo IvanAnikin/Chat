@@ -52,6 +52,56 @@ namespace Server.Controllers
             };
         }
 
+
+        [HttpGet("photo")]
+        public ContentResult Photo()
+        {
+
+            string text;
+            var fileStream = new FileStream(@"VideoPhotoPage.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+
+        [HttpGet("upload")]
+        public ContentResult UploadPhoto()
+        {
+            try
+            {
+                string text;
+                var fileStream = new FileStream(@"uploadPhoto.html", FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    text = streamReader.ReadToEnd();
+                }
+
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = text
+                };
+            }
+            catch (Exception e)
+            {
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Content = e.Message 
+                };
+            }
+        }
+
         [HttpGet("string")]
         public string String()
         {

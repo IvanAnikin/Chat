@@ -34,7 +34,7 @@ function startVideo() {
 
     navigator.getUserMedia(
 
-        { video: {  } },
+        { video: {} },
 
         stream => video.srcObject = stream,
 
