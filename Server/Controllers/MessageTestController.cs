@@ -57,7 +57,7 @@ namespace Server.Controllers
             message.authorNickName = "nickname";
             message.body = "message";
 
-            _chatManager.StoreMessage("1", message);
+            _chatManager.StoreMessage("1", message, "");
         }
     }
 }

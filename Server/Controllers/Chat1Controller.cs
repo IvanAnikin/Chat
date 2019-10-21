@@ -59,7 +59,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("SendMessage")]
-        public void Post(string text, string nickname, string chatName)
+        public void Post(string text, string nickname, string chatName, string guid)
         {
             Message message = new Message
             {
@@ -68,7 +68,7 @@ namespace Server.Controllers
                 body = text
             };
 
-            _chatManager.StoreMessage(chatName, message);
+            _chatManager.StoreMessage(chatName, message, guid);
         }
 
         [HttpPost ("CreateChat")]

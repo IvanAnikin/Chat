@@ -70,7 +70,7 @@
         function sendMessage() {
             var http = new XMLHttpRequest();
             var url = '/api/Chat/SendMessage';
-            var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName;
+            var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId;
             http.open('POST', url + params, true);
 
             http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

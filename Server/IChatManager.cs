@@ -25,7 +25,7 @@ namespace Server
 
     public interface IChatManager
     {
-        void StoreMessage(string chatName, Message message);
+        void StoreMessage(string chatName, Message message, string guid);
         NewSessionResult GetLastMessages(string chatName, int count);
         NewSessionResultChats GetChatsSession(int count);
         Task<Message> GetNewMessageAsync(string chatName, string sessionId);

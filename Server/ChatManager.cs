@@ -12,11 +12,12 @@ namespace Server
     public class ChatManager : IChatManager
     {
         private ConcurrentDictionary<string, List<Message>> _chats = new ConcurrentDictionary<string, List<Message>>();
-        private ConcurrentDictionary<string, BufferBlock<Message>> _bufferBlocks = new ConcurrentDictionary<string, BufferBlock<Message>>();
+        private ConcurrentDictionary<string, List<string>> _chatSessions = new ConcurrentDictionary<string, List<string>>();
+        private ConcurrentDictionary<string, BufferBlock<Message>> _sessionListeners = new ConcurrentDictionary<string, BufferBlock<Message>>();
         private ConcurrentDictionary<string, BufferBlock<string>> _bufferBlocksChat = new ConcurrentDictionary<string, BufferBlock<string>>();
         //private BufferBlock<Message> _messageQueue = new BufferBlock<Message>();
 
-        public void StoreMessage(string chatName, Message message)
+        public void StoreMessage(string chatName, Message message, string guid)
         {
             if(!_chats.ContainsKey(chatName))
             {
@@ -24,23 +25,30 @@ namespace Server
             }
             _chats[chatName].Add(message);
 
-            foreach(var bufferBlock in _bufferBlocks)
+            if (_chatSessions.TryGetValue(chatName, out var sessionIds))
             {
-                bufferBlock.Value.SendAsync(message);
+                foreach (var sessionId in sessionIds)
+                {
+                    _sessionListeners[sessionId].SendAsync(message);
+                }
             }
         }
         
         public NewSessionResult GetLastMessages(string chatName, int count)
         {
             string guid = Guid.NewGuid().ToString();
-            _bufferBlocks[guid] = new BufferBlock<Message>();
+            _sessionListeners[guid] = new BufferBlock<Message>();
+            if (!_chatSessions.ContainsKey(chatName))
+            {
+                _chatSessions[chatName] = new List<string>();
+            }
+            _chatSessions[chatName].Add(guid);
 
-            var messages = new List<Message>();
             List<Message> outputMessages = new List<Message> { };
 
             try
             {
-                messages = _chats[chatName];
+                var messages = _chats[chatName];
 
                 if (messages.Count <= 10)
                 {
@@ -77,7 +85,7 @@ namespace Server
 
         public async Task<Message> GetNewMessageAsync(string chatName, string sessionId)
         {
-            return await _bufferBlocks[sessionId].ReceiveAsync();
+            return await _sessionListeners[sessionId].ReceiveAsync();
         }
 
         public async Task<string> GetNewChatAsync(string sessionId)
@@ -125,7 +133,22 @@ namespace Server
 
         public void BBremove(string sessionId)
         {
-            _bufferBlocks.TryRemove(sessionId, out BufferBlock<Message> value);
+            _sessionListeners.TryRemove(sessionId, out BufferBlock<Message> _);
+            foreach(var chat in _chatSessions)
+            {
+                foreach(var session in chat.Value)
+                {
+                    if(session == sessionId)
+                    {
+                        chat.Value.Remove(session);
+                        if(chat.Value.Count == 0)
+                        {
+                            _chatSessions.TryRemove(chat.Key, out var _);
+                        }
+                        return;
+                    }
+                }
+            }
         }
     }
 }
