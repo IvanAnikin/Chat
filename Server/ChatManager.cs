@@ -33,6 +33,8 @@ namespace Server
                 }
             }
         }
+
+
         
         public NewSessionResult GetLastMessages(string chatName, int count)
         {

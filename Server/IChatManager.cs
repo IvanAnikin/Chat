@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Server
 {
@@ -21,6 +22,22 @@ namespace Server
         public string time;
         public string authorNickName;
         public string body;
+    }
+
+    public class MessageTable : TableEntity
+    {
+        public string time;
+        public string authorNickName;
+        public string body;
+
+        public void AssignRowKey()
+        {
+            this.RowKey = time;
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = authorNickName;
+        }
     }
 
     public interface IChatManager
