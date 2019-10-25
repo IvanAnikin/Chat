@@ -63,7 +63,7 @@ namespace Server.Controllers
 
             CloudStorageAccount storageAccount = null;
 
-            string storageConnectionString = ConfigurationManager.ConnectionStrings["AzureTableConStr"].ConnectionString;
+            string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
 
             if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
             {
@@ -73,11 +73,7 @@ namespace Server.Controllers
                 CloudTable cloudTable = tableClient.GetTableReference(tableName);
                 await CreateNewTableAsync(cloudTable);
 
-                //string time = "time"; //DateTime.UtcNow.ToLongTimeString()
-                //string nickname = "Shrimp";
-                //string value = "message"; //Guid.NewGuid().ToString();
-
-                await InsertRecordToTableAsync(cloudTable, message.time, message.authorNickName, message.body); //ERROR -> look bellow
+                await InsertRecordToTableAsync(cloudTable, message.time, message.authorNickName, message.body);
             }
             else
             {
@@ -86,17 +82,35 @@ namespace Server.Controllers
             }
         }
 
+        public static async Task DisplayTableRecordsAsync(CloudTable table)
+        {
+            TableQuery<MessageTable> tableQuery = new TableQuery<MessageTable>();
+            TableContinuationToken token = null;
+
+            foreach (MessageTable message in await table.ExecuteQuerySegmentedAsync(tableQuery, token))
+            {
+                Console.WriteLine("Time : {0}", message.Time);
+                Console.WriteLine("NIckname : {0}", message.AuthorNickName);
+                Console.WriteLine("Message : {0}", message.Body);
+                Console.WriteLine("******************************");
+            }
+        }
+
         public static async Task InsertRecordToTableAsync(CloudTable table, string time, string nickname, string value)
         {
-            MessageTable messageTable = new MessageTable();
-            messageTable.time = time;
-            messageTable.authorNickName = nickname;
-            messageTable.body = value;
+            MessageTable message = new MessageTable();
+            message.Time = time;
+            message.AuthorNickName = nickname;
+            message.Body = value;
+
+            message.AssignPartitionKey();
+            message.AssignRowKey();
+
             Message mess = await RetrieveRecordAsync(table, time, nickname);
             if (mess == null)
             {
-                TableOperation tableOperation = TableOperation.Insert(messageTable);
-                await table.ExecuteAsync(tableOperation); //ERROR : "bad request" ???
+                TableOperation tableOperation = TableOperation.Insert(message);
+                await table.ExecuteAsync(tableOperation);
                 Console.WriteLine("Record inserted");
             }
             else

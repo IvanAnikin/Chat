@@ -26,17 +26,57 @@ namespace Server
 
     public class MessageTable : TableEntity
     {
-        public string time;
-        public string authorNickName;
-        public string body;
+        private string time;
+        private string authorNickName;
+        private string body;
+
+        public string Time
+        {
+            get
+            {
+                return time;
+            }
+
+            set
+            {
+                time = value;
+            }
+        }
+
+        public string AuthorNickName
+        {
+            get
+            {
+                return authorNickName;
+            }
+
+            set
+            {
+                authorNickName = value;
+            }
+        }
+
+        public string Body
+        {
+            get
+            {
+                return body;
+            }
+
+            set
+            {
+                body = value;
+            }
+        }
+
 
         public void AssignRowKey()
         {
-            this.RowKey = time;
+            this.RowKey = authorNickName;
         }
         public void AssignPartitionKey()
         {
-            this.PartitionKey = authorNickName;
+            this.PartitionKey = time;
         }
     }
 
