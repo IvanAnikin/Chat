@@ -53,6 +53,36 @@ namespace Server.Controllers
             };
         }
 
+        [HttpGet("String")]
+        public string GetString()
+        {
+            return "String";
+        }
+
+        [HttpGet ("TableTest")]
+        public async Task<string> SendToTableAsync(string text, string nickname, string chatName, string guid)
+        {
+            //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
+            string storageConnectionString = ""; //STORAGE CONNECTION STRING !!!
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                string tableName = "TableTest";
+                CloudTable cloudTable = tableClient.GetTableReference(tableName);
+                return await CreateNewTableAsync(cloudTable);
+
+                //return "connection string approved :-)";
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
         [HttpPost ("SendMessage")]
         public async Task PostAsync(string text, string nickname, string chatName, string guid)
         {
@@ -63,7 +93,8 @@ namespace Server.Controllers
 
             CloudStorageAccount storageAccount = null;
 
-            string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
+            //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
+            string storageConnectionString = ""; //STORAGE CONNECTION STRING !!!
 
             if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
             {
@@ -77,8 +108,7 @@ namespace Server.Controllers
             }
             else
             {
-                Console.WriteLine(
-                    "Wrong connection string");
+                //Console.WriteLine("Wrong connection string");
             }
         }
 
@@ -89,10 +119,12 @@ namespace Server.Controllers
 
             foreach (MessageTable message in await table.ExecuteQuerySegmentedAsync(tableQuery, token))
             {
+                /*
                 Console.WriteLine("Time : {0}", message.Time);
                 Console.WriteLine("NIckname : {0}", message.AuthorNickName);
                 Console.WriteLine("Message : {0}", message.Body);
                 Console.WriteLine("******************************");
+                */
             }
         }
 
@@ -111,11 +143,11 @@ namespace Server.Controllers
             {
                 TableOperation tableOperation = TableOperation.Insert(message);
                 await table.ExecuteAsync(tableOperation);
-                Console.WriteLine("Record inserted");
+                //Console.WriteLine("Record inserted");
             }
             else
             {
-                Console.WriteLine("Record exists");
+                //Console.WriteLine("Record exists");
             }
         }
         public static async Task<Message> RetrieveRecordAsync(CloudTable table, string partitionKey, string rowKey)
@@ -125,14 +157,15 @@ namespace Server.Controllers
             return tableResult.Result as Message;
         }
 
-        public static async Task CreateNewTableAsync(CloudTable table)
+        public static async Task<string> CreateNewTableAsync(CloudTable table)
         {
             if (!await table.CreateIfNotExistsAsync())
             {
-                Console.WriteLine("Table {0} already exists", table.Name);
-                return;
+                //Console.WriteLine("Table {0} already exists", table.Name);
+                return "Table '" + table.Name + "' already exists";
             }
-            Console.WriteLine("Table {0} created", table.Name);
+            //Console.WriteLine("Table {0} created", table.Name);
+            return "Table '" + table.Name + "' created";
         }
     }
 }
