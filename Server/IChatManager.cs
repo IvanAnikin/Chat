@@ -24,6 +24,47 @@ namespace Server
         public string body;
     }
 
+    public class MessageTableNew : TableEntity
+    {
+        private string chatName;
+        private string[]  message;
+
+        public string ChatName
+        {
+            get
+            {
+                return chatName;
+            }
+
+            set
+            {
+                chatName = value;
+            }
+        }
+        public string[] Message
+        {
+            get
+            {
+                return message;
+            }
+
+            set
+            {
+                message = value;
+            }
+        }
+        public void AssignRowKey()
+        {
+            this.RowKey = message[0];
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = message[1];
+        }
+    }
+
+
+
     public class MessageTable : TableEntity
     {
         private string time;
@@ -93,5 +134,6 @@ namespace Server
         void DeleteChat(string chatName);
         void BBCremove(string sessionId);
         void BBremove(string sessionId);
+        Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr);
     }    
 }

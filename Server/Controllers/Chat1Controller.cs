@@ -76,5 +76,13 @@ namespace Server.Controllers
         {
             _chatManager.CreateChat(chatName);
         }
+
+        //table testing
+
+        [HttpGet("TableSend")]
+        public async Task<string> TableSendTestAsync(string text, string nickname, string chatName, string connStr)
+        {
+            return await _chatManager.SendToTableAsync(text, nickname, chatName, connStr);
+        }
     }
 }

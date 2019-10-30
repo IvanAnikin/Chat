@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Server
 {
@@ -15,7 +17,6 @@ namespace Server
         private ConcurrentDictionary<string, List<string>> _chatSessions = new ConcurrentDictionary<string, List<string>>();
         private ConcurrentDictionary<string, BufferBlock<Message>> _sessionListeners = new ConcurrentDictionary<string, BufferBlock<Message>>();
         private ConcurrentDictionary<string, BufferBlock<string>> _bufferBlocksChat = new ConcurrentDictionary<string, BufferBlock<string>>();
-        //private BufferBlock<Message> _messageQueue = new BufferBlock<Message>();
 
         public void StoreMessage(string chatName, Message message, string guid)
         {
@@ -24,6 +25,7 @@ namespace Server
                 _chats[chatName] = new List<Message>(); 
             }
             _chats[chatName].Add(message);
+            //SendToTableAsync(message.body, message.authorNickName, chatName, connStr);
 
             if (_chatSessions.TryGetValue(chatName, out var sessionIds))
             {
@@ -33,8 +35,6 @@ namespace Server
                 }
             }
         }
-
-
         
         public NewSessionResult GetLastMessages(string chatName, int count)
         {
@@ -152,5 +152,140 @@ namespace Server
                 }
             }
         }
+
+
+
+        //
+        //DB TOOLS 
+        //
+
+        public async Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr)
+        {
+            //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
+            string storageConnectionString = connStr; //STORAGE CONNECTION STRING !!!
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                string tableName = "chats";
+                CloudTable cloudTable = tableClient.GetTableReference(tableName);
+                await CreateNewTableAsync(cloudTable);
+
+                return await InsertRecordToTableStrAsync(cloudTable, DateTime.UtcNow.ToLongTimeString(), nickname, text, chatName);
+
+                //return "connection string approved :-)";
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
+        public static async Task<string> DisplayTableRecordsAsync(CloudTable table)
+        {
+            TableQuery<MessageTable> tableQuery = new TableQuery<MessageTable>();
+            TableContinuationToken token = null;
+            string output = "";
+
+            foreach (MessageTable message in await table.ExecuteQuerySegmentedAsync(tableQuery, token))
+            {
+                /*
+                Console.WriteLine("Time : {0}", message.Time);
+                Console.WriteLine("NIckname : {0}", message.AuthorNickName);
+                Console.WriteLine("Message : {0}", message.Body);
+                Console.WriteLine("******************************");
+                */
+                output += ("Time : " + message.Time + " || " + "Nickname : " + message.AuthorNickName + " || " + "Message : " + message.Body + Environment.NewLine);
+
+            }
+            return output;
+        }
+
+        public static async Task InsertRecordToTableAsync(CloudTable table, string time, string nickname, string value)
+        {
+            
+            MessageTable message = new MessageTable();
+            message.Time = time;
+            message.AuthorNickName = nickname;
+            message.Body = value;
+            
+
+            
+
+            Message mess = await RetrieveRecordAsync(table, time, nickname);
+            if (mess == null)
+            {
+                TableOperation tableOperation = TableOperation.Insert(message);
+                await table.ExecuteAsync(tableOperation);
+                //Console.WriteLine("Record inserted");
+            }
+            else
+            {
+                //Console.WriteLine("Record exists");
+            }
+        }
+        public static async Task<string> InsertRecordToTableStrAsync(CloudTable table, string time, string nickname, string value, string chatName)
+        {
+            /*
+            MessageTable message = new MessageTable();
+            message.Time = time;
+            message.AuthorNickName = nickname;
+            message.Body = value;
+
+            message.AssignPartitionKey();
+            message.AssignRowKey();
+            */
+
+            MessageTableNew messageTable = new MessageTableNew();
+            messageTable.ChatName = chatName;
+            messageTable.Message[0] = time;
+            messageTable.Message[1] = nickname;
+            messageTable.Message[2] = value;
+
+            messageTable.AssignPartitionKey();
+            messageTable.AssignRowKey();
+
+            TableOperation tableOperation = TableOperation.Insert(messageTable);
+            await table.ExecuteAsync(tableOperation);
+            return "Record inserted";
+
+            /*
+            Message mess = await RetrieveRecordAsync(table, time, nickname);
+            if (mess == null)
+            {
+                TableOperation tableOperation = TableOperation.Insert(messageTable);
+                await table.ExecuteAsync(tableOperation);
+                return "Record inserted";
+            }
+            else
+            {
+                return "Record exists";
+            }
+            */
+        }
+
+        public static async Task<Message> RetrieveRecordAsync(CloudTable table, string partitionKey, string rowKey)
+        {
+            TableOperation tableOperation = TableOperation.Retrieve<MessageTable>(partitionKey, rowKey);
+            TableResult tableResult = await table.ExecuteAsync(tableOperation);
+            return tableResult.Result as Message;
+        }
+
+
+
+        public static async Task<string> CreateNewTableAsync(CloudTable table)
+        {
+            if (!await table.CreateIfNotExistsAsync())
+            {
+                //Console.WriteLine("Table {0} already exists", table.Name);
+                return "Table '" + table.Name + "' already exists";
+            }
+            //Console.WriteLine("Table {0} created", table.Name);
+            return "Table '" + table.Name + "' created";
+        }
+
     }
 }

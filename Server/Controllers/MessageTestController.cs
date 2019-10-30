@@ -62,11 +62,16 @@ namespace Server.Controllers
         [HttpGet("ConnStr")]
         public string GetConnectionString()
         {
-            string connStr = "";
+            
             try
             {
-                connStr = ConfigurationManager.AppSettings["tablestoragecs"];
-                return connStr;
+                //string connStr = ConfigurationManager.AppSettings["tablestoragecs"];
+                //string connStr = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+
+                ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
+                string output = settings["connString"].ConnectionString;
+
+                return output;
             }
             catch(Exception e)
             {
