@@ -63,6 +63,48 @@ namespace Server
         }
     }
 
+    public class MessageTableTest : TableEntity
+    {
+        private string time;
+        private string body;
+
+        public string Time
+        {
+            get
+            {
+                return time;
+            }
+
+            set
+            {
+                time = value;
+            }
+        }
+
+        public string Body
+        {
+            get
+            {
+                return body;
+            }
+
+            set
+            {
+                body = value;
+            }
+        }
+
+
+        public void AssignRowKey()
+        {
+            this.RowKey = time;
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = body;
+        }
+    }
+
 
 
     public class MessageTable : TableEntity
@@ -70,6 +112,19 @@ namespace Server
         private string time;
         private string authorNickName;
         private string body;
+        private string chatName;
+
+        public string ChatName
+        {
+            get
+            {
+                return chatName;
+            }
+            set
+            {
+                chatName = value;
+            }
+        }
 
         public string Time
         {
@@ -113,11 +168,11 @@ namespace Server
 
         public void AssignRowKey()
         {
-            this.RowKey = authorNickName;
+            this.RowKey = time;
         }
         public void AssignPartitionKey()
         {
-            this.PartitionKey = time;
+            this.PartitionKey = chatName;
         }
     }
 
@@ -135,5 +190,7 @@ namespace Server
         void BBCremove(string sessionId);
         void BBremove(string sessionId);
         Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr);
+        Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr);
+        Task<string> TableGetData();
     }    
 }
