@@ -82,7 +82,14 @@ namespace Server.Controllers
         [HttpGet("TableSend")]
         public async Task<string> TableSendTestAsync(string text, string nickname, string chatName, string connStr)
         {
-            return await _chatManager.SendToTableAsync(text, nickname, chatName, connStr);
+            return await _chatManager.SendToTableTestAsync(text, nickname, chatName, connStr);
+            //return await _chatManager.SendToTableAsync(text, nickname, chatName, connStr);
+        }
+
+        [HttpGet("GetTableData")]
+        public async Task<string> TableGetdata()
+        {
+            return await _chatManager.TableGetData();
         }
     }
 }

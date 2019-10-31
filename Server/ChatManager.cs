@@ -159,10 +159,59 @@ namespace Server
         //DB TOOLS 
         //
 
+        public async Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr)
+        {
+            //string storageConnectionString = connStr;
+            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                string tableName = "chats";
+                CloudTable cloudTable = tableClient.GetTableReference(tableName);
+                await CreateNewTableAsync(cloudTable);
+
+                /*
+                MessageTableTest messageTable = new MessageTableTest();
+                messageTable.Body = text;
+                messageTable.Time = DateTime.UtcNow.ToLongTimeString();
+
+                messageTable.AssignPartitionKey();
+                messageTable.AssignRowKey();
+                */
+
+                MessageTable messageTable = new MessageTable();
+                messageTable.ChatName = chatName;
+                messageTable.Time = DateTime.UtcNow.ToLongTimeString();
+                messageTable.AuthorNickName = nickname;
+                messageTable.Body = text;
+
+                messageTable.AssignPartitionKey();
+                messageTable.AssignRowKey();
+
+
+                TableOperation tableOperation = TableOperation.Insert(messageTable);
+                await cloudTable.ExecuteAsync(tableOperation);
+                return "Record inserted";
+
+
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
+
+
         public async Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr)
         {
             //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
-            string storageConnectionString = connStr; //STORAGE CONNECTION STRING !!!
+            //string storageConnectionString = connStr; //STORAGE CONNECTION STRING !!!
+            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
             CloudStorageAccount storageAccount = null;
 
             if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
@@ -175,6 +224,30 @@ namespace Server
                 await CreateNewTableAsync(cloudTable);
 
                 return await InsertRecordToTableStrAsync(cloudTable, DateTime.UtcNow.ToLongTimeString(), nickname, text, chatName);
+
+                //return "connection string approved :-)";
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
+        public async Task<string> TableGetData()
+        {
+            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                string tableName = "chats";
+                CloudTable cloudTable = tableClient.GetTableReference(tableName);
+                await CreateNewTableAsync(cloudTable);
+
+                return await DisplayTableRecordsAsync(cloudTable);
 
                 //return "connection string approved :-)";
             }
