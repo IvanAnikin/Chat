@@ -24,6 +24,45 @@ namespace Server
         public string body;
     }
 
+    public class MessageTableArray : TableEntity
+    {
+        private string chatName;
+        private string[] message;
+
+        public string ChatName
+        {
+            get
+            {
+                return chatName;
+            }
+
+            set
+            {
+                chatName = value;
+            }
+        }
+        public string[] Message
+        {
+            get
+            {
+                return message;
+            }
+
+            set
+            {
+                message = value;
+            }
+        }
+        public void AssignRowKey()
+        {
+            this.RowKey = message[0];
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = message[1];
+        }
+    }
+
     public class MessageTableNew : TableEntity
     {
         private string chatName;
@@ -192,5 +231,9 @@ namespace Server
         Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr);
         Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr);
         Task<string> TableGetData();
+        Task<string> CreateNewTables();
+        Task<string> SendToTableTestArrayAsync(string text, string nickname, string chatName, string connStr);
+        Task<string> DBCreateNewChat(string chatName);
+        Task<string> DBDeleteChat(string chatName);
     }    
 }

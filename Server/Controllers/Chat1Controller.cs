@@ -91,5 +91,25 @@ namespace Server.Controllers
         {
             return await _chatManager.TableGetData();
         }
+        [HttpGet("CreateTable")]
+        public async Task<string> CreateTable()
+        {
+            return await _chatManager.CreateNewTables();
+        }
+        [HttpGet("SendMessageArray")]
+        public async Task<string> SendMessagearray(string text, string nickname, string chatName, string connStr)
+        {
+            return await _chatManager.SendToTableTestArrayAsync(text, nickname, chatName, connStr);
+        }
+        [HttpGet("DBCreateNewChat")]
+        public async Task<string> DBCreateNewChat(string chatName)
+        {
+            return await _chatManager.DBCreateNewChat(chatName);
+        }
+        [HttpGet("DBDeleteChat")]
+        public async Task<string> DBCDeleteChat(string chatName)
+        {
+            return await _chatManager.DBDeleteChat(chatName);
+        }
     }
 }

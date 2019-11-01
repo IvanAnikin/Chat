@@ -18,6 +18,11 @@ namespace Server
         private ConcurrentDictionary<string, BufferBlock<Message>> _sessionListeners = new ConcurrentDictionary<string, BufferBlock<Message>>();
         private ConcurrentDictionary<string, BufferBlock<string>> _bufferBlocksChat = new ConcurrentDictionary<string, BufferBlock<string>>();
 
+        private string connectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+
+        private CloudStorageAccount storageAccount = null;
+
+
         public void StoreMessage(string chatName, Message message, string guid)
         {
             if(!_chats.ContainsKey(chatName))
@@ -38,6 +43,8 @@ namespace Server
         
         public NewSessionResult GetLastMessages(string chatName, int count)
         {
+            //await CreateNewTables(); //DB
+
             string guid = Guid.NewGuid().ToString();
             _sessionListeners[guid] = new BufferBlock<Message>();
             if (!_chatSessions.ContainsKey(chatName))
@@ -105,15 +112,16 @@ namespace Server
             return chats;
         }
 
-        public void CreateChat(string chatName)
+        public async void CreateChat(string chatName)
         {
+            //await CreateNewTables(); //DB 
             if (!_chats.ContainsKey(chatName))
             {
                 _chats[chatName] = new List<Message>();
 
                 foreach (var bufferBlock in _bufferBlocksChat)
                 {
-                    bufferBlock.Value.SendAsync(chatName);
+                    await bufferBlock.Value.SendAsync(chatName);
                 }
             }
         }
@@ -158,6 +166,45 @@ namespace Server
         //
         //DB TOOLS 
         //
+
+        //create table for NEW CHAT
+        public async Task<string> DBCreateNewChat(string chatName)
+        {
+            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
+            {
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                CloudTable cloudTable = tableClient.GetTableReference(chatName);
+                return await CreateNewTableAsync(cloudTable);
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
+        //DELETE TABLE of chat
+        public async Task<string> DBDeleteChat(string chatName)
+        {
+            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
+            {
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                //TableOperation tableOperation = TableOperation.Delete("chat");
+
+                CloudTable cloudTable = tableClient.GetTableReference(chatName);
+
+                if (await cloudTable.DeleteIfExistsAsync()) return "deleted";
+                else return "no such table";
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
+
+
 
         public async Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr)
         {
@@ -205,13 +252,53 @@ namespace Server
             }
         }
 
+        public async Task<string> SendToTableTestArrayAsync(string text, string nickname, string chatName, string connStr)
+        {
+            //string storageConnectionString = connStr;
+            string storageConnectionString = connectionString;
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+                try
+                {
+                    CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                    string tableName = "chats";
+                    CloudTable cloudTable = tableClient.GetTableReference(tableName);
+                    await CreateNewTableAsync(cloudTable);
+
+                    MessageTableArray messageTable = new MessageTableArray();
+                    messageTable.ChatName = chatName;
+                    messageTable.Message = new string[3];
+                    //messageTable.Message[0] = text;
+                    //messageTable.Message[1] = nickname;
+                    //messageTable.Message[2] = DateTime.UtcNow.ToLongTimeString();
+
+
+                    TableOperation tableOperation = TableOperation.Insert(messageTable);
+                    await cloudTable.ExecuteAsync(tableOperation);
+                    return "Record inserted";
+                }
+                catch(Exception e)
+                {
+                    return e.ToString();
+                }
+                
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+        }
+
 
 
         public async Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr)
         {
             //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
             //string storageConnectionString = connStr; //STORAGE CONNECTION STRING !!!
-            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+            string storageConnectionString = connectionString;
             CloudStorageAccount storageAccount = null;
 
             if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
@@ -358,6 +445,36 @@ namespace Server
             }
             //Console.WriteLine("Table {0} created", table.Name);
             return "Table '" + table.Name + "' created";
+        }
+
+        public async Task<string> CreateNewTables()
+        {
+            string storageConnectionString = connectionString;
+            CloudStorageAccount storageAccount = null;
+
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            {
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                string tableName = "chats";
+                CloudTable cloudTable = tableClient.GetTableReference(tableName);
+
+                if (!await cloudTable.CreateIfNotExistsAsync())
+                {
+                    //Console.WriteLine("Table {0} already exists", table.Name);
+                    return "Table '" + cloudTable.Name + "' already exists";
+                }
+                //Console.WriteLine("Table {0} created", table.Name);
+                return "Table '" + cloudTable.Name + "' created";
+
+
+            }
+            else
+            {
+                return "wrong connection string";
+            }
+            
         }
 
     }
