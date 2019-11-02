@@ -51,7 +51,7 @@ namespace Server.Controllers
         public void DeleteChats() => _chatManager.DeleteChats();
 
         [HttpPost("DeleteChat")]
-        public void DeleteChat(string chatName) => _chatManager.DeleteChat(chatName);
+        public void DeleteChat(string chatName) => _chatManager.DeleteChatAsync(chatName);
 
         [HttpPost("BBCremove")] //remove bufferBlockChats /when leaving default page
         public void BBCremove(string sessionId) => _chatManager.BBCremove(sessionId);

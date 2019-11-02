@@ -68,7 +68,7 @@ namespace Server.Controllers
                 body = text
             };
 
-            _chatManager.StoreMessage(chatName, message, guid);
+            _chatManager.StoreMessageAsync(chatName, message, guid);
         }
 
         [HttpPost ("CreateChat")]
@@ -77,29 +77,11 @@ namespace Server.Controllers
             _chatManager.CreateChat(chatName);
         }
 
-        //table testing
-
-        [HttpGet("TableSend")]
-        public async Task<string> TableSendTestAsync(string text, string nickname, string chatName, string connStr)
-        {
-            return await _chatManager.SendToTableTestAsync(text, nickname, chatName, connStr);
-            //return await _chatManager.SendToTableAsync(text, nickname, chatName, connStr);
-        }
-
+        //DB
         [HttpGet("GetTableData")]
-        public async Task<string> TableGetdata()
+        public async Task<string> TableGetdata(string chatName)
         {
-            return await _chatManager.TableGetData();
-        }
-        [HttpGet("CreateTable")]
-        public async Task<string> CreateTable()
-        {
-            return await _chatManager.CreateNewTables();
-        }
-        [HttpGet("SendMessageArray")]
-        public async Task<string> SendMessagearray(string text, string nickname, string chatName, string connStr)
-        {
-            return await _chatManager.SendToTableTestArrayAsync(text, nickname, chatName, connStr);
+            return await _chatManager.TableGetData(chatName);
         }
         [HttpGet("DBCreateNewChat")]
         public async Task<string> DBCreateNewChat(string chatName)
@@ -110,6 +92,11 @@ namespace Server.Controllers
         public async Task<string> DBCDeleteChat(string chatName)
         {
             return await _chatManager.DBDeleteChat(chatName);
+        }
+        [HttpGet("DBStoreMessage")]
+        public async Task<string> DBStoreMessage(string text, string nickname, string chatName)
+        {
+            return await _chatManager.DBStoreMessage(text, nickname, chatName);
         }
     }
 }

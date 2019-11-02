@@ -23,20 +23,21 @@ namespace Server
         private CloudStorageAccount storageAccount = null;
 
 
-        public void StoreMessage(string chatName, Message message, string guid)
+        public async Task StoreMessageAsync(string chatName, Message message, string guid)
         {
             if(!_chats.ContainsKey(chatName))
             {
                 _chats[chatName] = new List<Message>(); 
             }
             _chats[chatName].Add(message);
-            //SendToTableAsync(message.body, message.authorNickName, chatName, connStr);
-
+            //DB
+            await DBStoreMessage(message.body, message.authorNickName, chatName);
+            //DB
             if (_chatSessions.TryGetValue(chatName, out var sessionIds))
             {
                 foreach (var sessionId in sessionIds)
                 {
-                    _sessionListeners[sessionId].SendAsync(message);
+                    await _sessionListeners[sessionId].SendAsync(message);
                 }
             }
         }
@@ -114,8 +115,17 @@ namespace Server
 
         public async void CreateChat(string chatName)
         {
-            //await CreateNewTables(); //DB 
-            if (!_chats.ContainsKey(chatName))
+            // DB 
+            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
+            {
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                CloudTable cloudTable = tableClient.GetTableReference(chatName);
+                await CreateNewTableAsync(cloudTable);
+            }
+            //DB 
+
+            if (!_chats.ContainsKey(chatName)) // look if there is this chat in DB 
             {
                 _chats[chatName] = new List<Message>();
 
@@ -131,9 +141,12 @@ namespace Server
             _chats.Clear();
         }
 
-        public void DeleteChat(string chatName)
+        public async Task DeleteChatAsync(string chatName)
         {
             _chats.Remove(chatName, out List<Message> value);
+            //DB
+            await DBDeleteChat(chatName);
+            //DB
         }
 
         public void BBCremove(string sessionId)
@@ -186,7 +199,8 @@ namespace Server
         //DELETE TABLE of chat
         public async Task<string> DBDeleteChat(string chatName)
         {
-            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
+            string storageConnectionString = connectionString;
+            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
             {
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -203,35 +217,22 @@ namespace Server
             }
         }
 
-
-
-
-        public async Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr)
+        //STORE MESSAGE in table with name of chatName
+        public async Task<string> DBStoreMessage(string text, string nickname, string chatName)
         {
-            //string storageConnectionString = connStr;
-            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+            string storageConnectionString = connectionString;
+            //   !!! get from app settins or connection strings
             CloudStorageAccount storageAccount = null;
 
             if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
             {
-
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-                string tableName = "chats";
+                string tableName = chatName;
                 CloudTable cloudTable = tableClient.GetTableReference(tableName);
                 await CreateNewTableAsync(cloudTable);
 
-                /*
-                MessageTableTest messageTable = new MessageTableTest();
-                messageTable.Body = text;
-                messageTable.Time = DateTime.UtcNow.ToLongTimeString();
-
-                messageTable.AssignPartitionKey();
-                messageTable.AssignRowKey();
-                */
-
                 MessageTable messageTable = new MessageTable();
-                messageTable.ChatName = chatName;
                 messageTable.Time = DateTime.UtcNow.ToLongTimeString();
                 messageTable.AuthorNickName = nickname;
                 messageTable.Body = text;
@@ -243,8 +244,6 @@ namespace Server
                 TableOperation tableOperation = TableOperation.Insert(messageTable);
                 await cloudTable.ExecuteAsync(tableOperation);
                 return "Record inserted";
-
-
             }
             else
             {
@@ -252,52 +251,8 @@ namespace Server
             }
         }
 
-        public async Task<string> SendToTableTestArrayAsync(string text, string nickname, string chatName, string connStr)
+        public async Task<string> TableGetData(string chatName)
         {
-            //string storageConnectionString = connStr;
-            string storageConnectionString = connectionString;
-            CloudStorageAccount storageAccount = null;
-
-            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
-            {
-                try
-                {
-                    CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-                    string tableName = "chats";
-                    CloudTable cloudTable = tableClient.GetTableReference(tableName);
-                    await CreateNewTableAsync(cloudTable);
-
-                    MessageTableArray messageTable = new MessageTableArray();
-                    messageTable.ChatName = chatName;
-                    messageTable.Message = new string[3];
-                    //messageTable.Message[0] = text;
-                    //messageTable.Message[1] = nickname;
-                    //messageTable.Message[2] = DateTime.UtcNow.ToLongTimeString();
-
-
-                    TableOperation tableOperation = TableOperation.Insert(messageTable);
-                    await cloudTable.ExecuteAsync(tableOperation);
-                    return "Record inserted";
-                }
-                catch(Exception e)
-                {
-                    return e.ToString();
-                }
-                
-            }
-            else
-            {
-                return "wrong connection string";
-            }
-        }
-
-
-
-        public async Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr)
-        {
-            //string storageConnectionString = ConfigurationManager.AppSettings["tablestoragecs"];
-            //string storageConnectionString = connStr; //STORAGE CONNECTION STRING !!!
             string storageConnectionString = connectionString;
             CloudStorageAccount storageAccount = null;
 
@@ -306,37 +261,11 @@ namespace Server
 
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-                string tableName = "chats";
-                CloudTable cloudTable = tableClient.GetTableReference(tableName);
-                await CreateNewTableAsync(cloudTable);
-
-                return await InsertRecordToTableStrAsync(cloudTable, DateTime.UtcNow.ToLongTimeString(), nickname, text, chatName);
-
-                //return "connection string approved :-)";
-            }
-            else
-            {
-                return "wrong connection string";
-            }
-        }
-
-        public async Task<string> TableGetData()
-        {
-            string storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
-            CloudStorageAccount storageAccount = null;
-
-            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
-            {
-
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-                string tableName = "chats";
+                string tableName = chatName;
                 CloudTable cloudTable = tableClient.GetTableReference(tableName);
                 await CreateNewTableAsync(cloudTable);
 
                 return await DisplayTableRecordsAsync(cloudTable);
-
-                //return "connection string approved :-)";
             }
             else
             {
@@ -352,14 +281,7 @@ namespace Server
 
             foreach (MessageTable message in await table.ExecuteQuerySegmentedAsync(tableQuery, token))
             {
-                /*
-                Console.WriteLine("Time : {0}", message.Time);
-                Console.WriteLine("NIckname : {0}", message.AuthorNickName);
-                Console.WriteLine("Message : {0}", message.Body);
-                Console.WriteLine("******************************");
-                */
                 output += ("Time : " + message.Time + " || " + "Nickname : " + message.AuthorNickName + " || " + "Message : " + message.Body + Environment.NewLine);
-
             }
             return output;
         }
@@ -371,9 +293,6 @@ namespace Server
             message.Time = time;
             message.AuthorNickName = nickname;
             message.Body = value;
-            
-
-            
 
             Message mess = await RetrieveRecordAsync(table, time, nickname);
             if (mess == null)
@@ -387,45 +306,6 @@ namespace Server
                 //Console.WriteLine("Record exists");
             }
         }
-        public static async Task<string> InsertRecordToTableStrAsync(CloudTable table, string time, string nickname, string value, string chatName)
-        {
-            /*
-            MessageTable message = new MessageTable();
-            message.Time = time;
-            message.AuthorNickName = nickname;
-            message.Body = value;
-
-            message.AssignPartitionKey();
-            message.AssignRowKey();
-            */
-
-            MessageTableNew messageTable = new MessageTableNew();
-            messageTable.ChatName = chatName;
-            messageTable.Message[0] = time;
-            messageTable.Message[1] = nickname;
-            messageTable.Message[2] = value;
-
-            messageTable.AssignPartitionKey();
-            messageTable.AssignRowKey();
-
-            TableOperation tableOperation = TableOperation.Insert(messageTable);
-            await table.ExecuteAsync(tableOperation);
-            return "Record inserted";
-
-            /*
-            Message mess = await RetrieveRecordAsync(table, time, nickname);
-            if (mess == null)
-            {
-                TableOperation tableOperation = TableOperation.Insert(messageTable);
-                await table.ExecuteAsync(tableOperation);
-                return "Record inserted";
-            }
-            else
-            {
-                return "Record exists";
-            }
-            */
-        }
 
         public static async Task<Message> RetrieveRecordAsync(CloudTable table, string partitionKey, string rowKey)
         {
@@ -434,47 +314,13 @@ namespace Server
             return tableResult.Result as Message;
         }
 
-
-
         public static async Task<string> CreateNewTableAsync(CloudTable table)
         {
             if (!await table.CreateIfNotExistsAsync())
             {
-                //Console.WriteLine("Table {0} already exists", table.Name);
                 return "Table '" + table.Name + "' already exists";
             }
-            //Console.WriteLine("Table {0} created", table.Name);
             return "Table '" + table.Name + "' created";
-        }
-
-        public async Task<string> CreateNewTables()
-        {
-            string storageConnectionString = connectionString;
-            CloudStorageAccount storageAccount = null;
-
-            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
-            {
-
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-                string tableName = "chats";
-                CloudTable cloudTable = tableClient.GetTableReference(tableName);
-
-                if (!await cloudTable.CreateIfNotExistsAsync())
-                {
-                    //Console.WriteLine("Table {0} already exists", table.Name);
-                    return "Table '" + cloudTable.Name + "' already exists";
-                }
-                //Console.WriteLine("Table {0} created", table.Name);
-                return "Table '" + cloudTable.Name + "' created";
-
-
-            }
-            else
-            {
-                return "wrong connection string";
-            }
-            
         }
 
     }

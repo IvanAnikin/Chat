@@ -151,19 +151,6 @@ namespace Server
         private string time;
         private string authorNickName;
         private string body;
-        private string chatName;
-
-        public string ChatName
-        {
-            get
-            {
-                return chatName;
-            }
-            set
-            {
-                chatName = value;
-            }
-        }
 
         public string Time
         {
@@ -211,13 +198,13 @@ namespace Server
         }
         public void AssignPartitionKey()
         {
-            this.PartitionKey = chatName;
+            this.PartitionKey = authorNickName;
         }
     }
 
     public interface IChatManager
     {
-        void StoreMessage(string chatName, Message message, string guid);
+        Task StoreMessageAsync(string chatName, Message message, string guid);
         NewSessionResult GetLastMessages(string chatName, int count);
         NewSessionResultChats GetChatsSession(int count);
         Task<Message> GetNewMessageAsync(string chatName, string sessionId);
@@ -225,15 +212,12 @@ namespace Server
         List<string> GetChats();
         void CreateChat(string chatName);
         void DeleteChats();
-        void DeleteChat(string chatName);
+        Task DeleteChatAsync(string chatName);
         void BBCremove(string sessionId);
         void BBremove(string sessionId);
-        Task<string> SendToTableAsync(string text, string nickname, string chatName, string connStr);
-        Task<string> SendToTableTestAsync(string text, string nickname, string chatName, string connStr);
-        Task<string> TableGetData();
-        Task<string> CreateNewTables();
-        Task<string> SendToTableTestArrayAsync(string text, string nickname, string chatName, string connStr);
+        Task<string> TableGetData(string ChatName);
         Task<string> DBCreateNewChat(string chatName);
         Task<string> DBDeleteChat(string chatName);
+        Task<string> DBStoreMessage(string text, string nickname, string chatName);
     }    
 }

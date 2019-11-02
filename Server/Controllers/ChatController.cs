@@ -57,7 +57,7 @@ namespace Server.Controllers
                 body = text
             };
 
-            _chatManager.StoreMessage(chatName, message, guid);
+            _chatManager.StoreMessageAsync(chatName, message, guid);
         }
 
         [HttpPost("BBremove")] //remove bufferBlockChats /when leaving default page
