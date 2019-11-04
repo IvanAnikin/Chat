@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols;
+using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -66,12 +67,18 @@ namespace Server.Controllers
             try
             {
                 //string connStr = ConfigurationManager.AppSettings["tablestoragecs"];
-                //string connStr = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+                string name = "connString";
+                string connStr = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+                //string connStr = Environment.GetEnvironmentVariable($"ConnectionStrings:{name}", EnvironmentVariableTarget.Process);
 
-                ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
-                string output = settings["connString"].ConnectionString;
+                //string connStr = ConfigurationExtensions.GetConnectionString(configuration, "connStr");
 
-                return output;
+                //IConfiguration con = new Server.Startup.Configuration();
+                //string connStr = con.GetConnectionString["connStr"];
+
+                //IConfiguration.
+
+                return connStr;
             }
             catch(Exception e)
             {

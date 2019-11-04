@@ -18,10 +18,25 @@ namespace Server
         private ConcurrentDictionary<string, BufferBlock<Message>> _sessionListeners = new ConcurrentDictionary<string, BufferBlock<Message>>();
         private ConcurrentDictionary<string, BufferBlock<string>> _bufferBlocksChat = new ConcurrentDictionary<string, BufferBlock<string>>();
 
-        private string connectionString = "DefaultEndpointsProtocol=https;AccountName=notesaccount;AccountKey=3/h/oSu1aRCzPOyUXy9YqOCDHTVGJJKpiM4NkFcbEBDHf38gKB1XGP8NqbcGLtj3e2rud2jBqe7seF3giFziow==;EndpointSuffix=core.windows.net";
+        private readonly string connectionString;
 
         private CloudStorageAccount storageAccount = null;
+        CloudTableClient tableClient = null;
 
+        public ChatManager(string connectionString)
+        {
+            this.connectionString = connectionString ?? throw new ArgumentNullException("ConnectionString is null");
+
+            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
+            {
+                tableClient = storageAccount.CreateCloudTableClient();
+            }
+            else
+            {
+                throw new ArgumentNullException("wrong connection string");
+            }
+
+        }
 
         public async Task StoreMessageAsync(string chatName, Message message, string guid)
         {
@@ -199,8 +214,7 @@ namespace Server
         //DELETE TABLE of chat
         public async Task<string> DBDeleteChat(string chatName)
         {
-            string storageConnectionString = connectionString;
-            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
+            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
             {
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
