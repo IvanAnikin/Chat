@@ -98,5 +98,10 @@ namespace Server.Controllers
         {
             return await _chatManager.DBStoreMessage(text, nickname, chatName);
         }
+        [HttpGet("DBGetAllChats")]
+        public async Task<List<string>> DBGetAllChats()
+        {
+            return await _chatManager.DBGetAllChats();
+        }
     }
 }

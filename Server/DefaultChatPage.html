@@ -47,6 +47,19 @@
             xhttp.send();
         }
 
+        document.addEventListener('keyup', function (event) {
+            /*if (event.defaultPrevented) {
+                return;
+            }
+            */
+            //alert("Testing");
+            var key = event.key || event.keyCode;
+
+            if (key === "Enter") {
+                sendMessage();
+            }
+        });
+
         function getLastMessage() {
 
             var xhttp = new XMLHttpRequest();
@@ -68,16 +81,16 @@
         }
 
         function sendMessage() {
-            var http = new XMLHttpRequest();
-            var url = '/api/Chat/SendMessage';
-            var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId;
-            http.open('POST', url + params, true);
+            if (document.getElementById("messageInput").value) {
+                var http = new XMLHttpRequest();
+                var url = '/api/Chat/SendMessage';
+                var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId;
+                http.open('POST', url + params, true);
 
-            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-            http.send(params);
-
-            //params, in 2 places ???? XXX
+                http.send(params);
+            }
         }
         function BBremove() {
             var http = new XMLHttpRequest();

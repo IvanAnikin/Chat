@@ -219,5 +219,6 @@ namespace Server
         Task<string> DBCreateNewChat(string chatName);
         Task<string> DBDeleteChat(string chatName);
         Task<string> DBStoreMessage(string text, string nickname, string chatName);
+        Task<List<string>> DBGetAllChats();
     }    
 }

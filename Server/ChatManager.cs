@@ -130,7 +130,7 @@ namespace Server
 
         public async void CreateChat(string chatName)
         {
-            // DB 
+            /* DB 
             if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
             {
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
@@ -138,7 +138,10 @@ namespace Server
                 CloudTable cloudTable = tableClient.GetTableReference(chatName);
                 await CreateNewTableAsync(cloudTable);
             }
-            //DB 
+            */ 
+
+            CloudTable cloudTable = this.tableClient.GetTableReference(chatName);
+            await CreateNewTableAsync(cloudTable);
 
             if (!_chats.ContainsKey(chatName)) // look if there is this chat in DB 
             {
@@ -151,6 +154,21 @@ namespace Server
             }
         }
 
+        public async Task<List<string>> DBGetAllChats()
+        {
+            List<string> output = new List<string>();
+            TableContinuationToken token = null;
+
+            var tables = await tableClient.ListTablesSegmentedAsync(token);
+
+            foreach (var table in tables)
+            {
+                output.Add(table.Name);
+            }
+
+            return output;
+        }
+
         public void DeleteChats()
         {
             _chats.Clear();
@@ -159,6 +177,7 @@ namespace Server
         public async Task DeleteChatAsync(string chatName)
         {
             _chats.Remove(chatName, out List<Message> value);
+
             //DB
             await DBDeleteChat(chatName);
             //DB
@@ -234,35 +253,24 @@ namespace Server
         //STORE MESSAGE in table with name of chatName
         public async Task<string> DBStoreMessage(string text, string nickname, string chatName)
         {
-            string storageConnectionString = connectionString;
-            //   !!! get from app settins or connection strings
-            CloudStorageAccount storageAccount = null;
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-            if (CloudStorageAccount.TryParse(storageConnectionString, out storageAccount))
-            {
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            string tableName = chatName;
+            CloudTable cloudTable = tableClient.GetTableReference(tableName);
+            await CreateNewTableAsync(cloudTable);
 
-                string tableName = chatName;
-                CloudTable cloudTable = tableClient.GetTableReference(tableName);
-                await CreateNewTableAsync(cloudTable);
+            MessageTable messageTable = new MessageTable();
+            messageTable.Time = DateTime.UtcNow.ToLongTimeString();
+            messageTable.AuthorNickName = nickname;
+            messageTable.Body = text;
 
-                MessageTable messageTable = new MessageTable();
-                messageTable.Time = DateTime.UtcNow.ToLongTimeString();
-                messageTable.AuthorNickName = nickname;
-                messageTable.Body = text;
-
-                messageTable.AssignPartitionKey();
-                messageTable.AssignRowKey();
+            messageTable.AssignPartitionKey();
+            messageTable.AssignRowKey();
 
 
-                TableOperation tableOperation = TableOperation.Insert(messageTable);
-                await cloudTable.ExecuteAsync(tableOperation);
-                return "Record inserted";
-            }
-            else
-            {
-                return "wrong connection string";
-            }
+            TableOperation tableOperation = TableOperation.Insert(messageTable);
+            await cloudTable.ExecuteAsync(tableOperation);
+            return "Record inserted";
         }
 
         public async Task<string> TableGetData(string chatName)
@@ -277,7 +285,6 @@ namespace Server
 
                 string tableName = chatName;
                 CloudTable cloudTable = tableClient.GetTableReference(tableName);
-                await CreateNewTableAsync(cloudTable);
 
                 return await DisplayTableRecordsAsync(cloudTable);
             }
