@@ -39,7 +39,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("OnLoad")]
-        public NewSessionResultChats OnLoad() => _chatManager.GetChatsSession(10);
+        public async Task<NewSessionResultChats> OnLoadAsync() => await _chatManager.GetChatsSessionAsync(10);
 
         [HttpGet("GetNewChat")]
         public Task<string> GetNewChat(string sessionId) => _chatManager.GetNewChatAsync(sessionId);

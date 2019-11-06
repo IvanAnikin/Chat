@@ -21,7 +21,10 @@
 
             document.getElementById("header").innerHTML = chatName;
             document.getElementById("nickname").innerHTML = "Nickname: " + nickname;
-            if (nickname == "") { document.getElementById("nickname").innerHTML = "Nickname: anonymous";}
+            if (nickname == "") {
+                document.getElementById("nickname").innerHTML = "Nickname: Anonymous";
+                nickname = "Anonymous";
+            }
             document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
 
             xhttp.onreadystatechange = function () {

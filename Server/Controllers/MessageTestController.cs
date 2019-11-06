@@ -66,17 +66,7 @@ namespace Server.Controllers
             
             try
             {
-                //string connStr = ConfigurationManager.AppSettings["tablestoragecs"];
-                string name = "connString";
                 string connStr = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
-                //string connStr = Environment.GetEnvironmentVariable($"ConnectionStrings:{name}", EnvironmentVariableTarget.Process);
-
-                //string connStr = ConfigurationExtensions.GetConnectionString(configuration, "connStr");
-
-                //IConfiguration con = new Server.Startup.Configuration();
-                //string connStr = con.GetConnectionString["connStr"];
-
-                //IConfiguration.
 
                 return connStr;
             }

@@ -206,10 +206,10 @@ namespace Server
     {
         Task StoreMessageAsync(string chatName, Message message, string guid);
         NewSessionResult GetLastMessages(string chatName, int count);
-        NewSessionResultChats GetChatsSession(int count);
+        Task<NewSessionResultChats> GetChatsSessionAsync(int count);
         Task<Message> GetNewMessageAsync(string chatName, string sessionId);
         Task<string> GetNewChatAsync(string sessionId);
-        List<string> GetChats();
+        Task<List<string>> GetChatsAsync();
         void CreateChat(string chatName);
         void DeleteChats();
         Task DeleteChatAsync(string chatName);
@@ -220,5 +220,6 @@ namespace Server
         Task<string> DBDeleteChat(string chatName);
         Task<string> DBStoreMessage(string text, string nickname, string chatName);
         Task<List<string>> DBGetAllChats();
+        List<Message> DBGetChatsMessages(string chatName);
     }    
 }

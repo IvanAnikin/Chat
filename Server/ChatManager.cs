@@ -38,7 +38,7 @@ namespace Server
 
         }
 
-        public async Task StoreMessageAsync(string chatName, Message message, string guid)
+        public async Task StoreMessageAsync(string chatName, Message message, string guid) //DOING WITH DB
         {
             if(!_chats.ContainsKey(chatName))
             {
@@ -57,10 +57,8 @@ namespace Server
             }
         }
         
-        public NewSessionResult GetLastMessages(string chatName, int count)
+        public NewSessionResult GetLastMessages(string chatName, int count) //DOING WITH DB
         {
-            //await CreateNewTables(); //DB
-
             string guid = Guid.NewGuid().ToString();
             _sessionListeners[guid] = new BufferBlock<Message>();
             if (!_chatSessions.ContainsKey(chatName))
@@ -69,21 +67,39 @@ namespace Server
             }
             _chatSessions[chatName].Add(guid);
 
-            List<Message> outputMessages = new List<Message> { };
+            List<Message> outputMessages = new List<Message>();
+
 
             try
             {
+                var table = tableClient.GetTableReference(chatName);
+                TableContinuationToken token = null;
+                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                var entities = new List<MessageTable>();
+                entities.AddRange(queryResult.Result);
+
+                Message message = new Message();
+
+                List<Message> output = new List<Message>();
+                foreach (var entity in entities)
+                {
+                    message.body = entity.Body;
+                    message.time = entity.Time;
+                    message.authorNickName = entity.AuthorNickName;
+                    output.Add(message);
+                }
+
                 var messages = _chats[chatName];
 
-                if (messages.Count <= 10)
+                if (output.Count <= 10)
                 {
-                    outputMessages = messages;
+                    outputMessages = output;
                 }
                 else
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        outputMessages.Add(messages[messages.Count - 10 + i]);
+                        outputMessages.Add(output[output.Count - 10 + i]);
                     }
                 }
             }
@@ -94,18 +110,26 @@ namespace Server
             return new NewSessionResult { sessionId = guid, lastMessages = outputMessages};
         }
 
-        public NewSessionResultChats GetChatsSession(int count)
+        
+
+        public async Task<NewSessionResultChats> GetChatsSessionAsync(int count)
         {
             string guid = Guid.NewGuid().ToString();
             _bufferBlocksChat[guid] = new BufferBlock<string>();
 
             List<string> chats = new List<string>();
-            foreach (var chat in _chats)
+
+            List<string> output = new List<string>();
+            TableContinuationToken token = null;
+
+            var tables = await tableClient.ListTablesSegmentedAsync(token);
+
+            foreach (var table in tables)
             {
-                chats.Add(chat.Key);
+                output.Add(table.Name);
             }
 
-            return new NewSessionResultChats { sessionId = guid, chats = chats };
+            return new NewSessionResultChats { sessionId = guid, chats = output };
         }
 
         public async Task<Message> GetNewMessageAsync(string chatName, string sessionId)
@@ -118,14 +142,18 @@ namespace Server
             return await _bufferBlocksChat[sessionId].ReceiveAsync();
         }
 
-        public List<string> GetChats()
+        public async Task<List<string>> GetChatsAsync()
         {
-            List<string> chats = new List<string>();
-            foreach(var chat in _chats)
+            List<string> output = new List<string>();
+            TableContinuationToken token = null;
+
+            var tables = await tableClient.ListTablesSegmentedAsync(token);
+
+            foreach (var table in tables)
             {
-                chats.Add(chat.Key);
+                output.Add(table.Name);
             }
-            return chats;
+            return output;
         }
 
         public async void CreateChat(string chatName)
@@ -174,7 +202,7 @@ namespace Server
             _chats.Clear();
         }
 
-        public async Task DeleteChatAsync(string chatName)
+        public async Task DeleteChatAsync(string chatName) //DOING WITH DB
         {
             _chats.Remove(chatName, out List<Message> value);
 
@@ -253,11 +281,9 @@ namespace Server
         //STORE MESSAGE in table with name of chatName
         public async Task<string> DBStoreMessage(string text, string nickname, string chatName)
         {
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-            string tableName = chatName;
-            CloudTable cloudTable = tableClient.GetTableReference(tableName);
-            await CreateNewTableAsync(cloudTable);
+            CloudTable cloudTable = tableClient.GetTableReference(chatName);
+            //await CreateNewTableAsync(cloudTable);
 
             MessageTable messageTable = new MessageTable();
             messageTable.Time = DateTime.UtcNow.ToLongTimeString();
@@ -292,6 +318,27 @@ namespace Server
             {
                 return "wrong connection string";
             }
+        }
+        //DB TESTING 
+        public List<Message> DBGetChatsMessages(string chatName)
+        {
+            var table = tableClient.GetTableReference(chatName);
+            TableContinuationToken token = null;
+            var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+            var entities = new List<MessageTable>();
+            entities.AddRange(queryResult.Result);
+
+            List<Message> output = new List<Message>();
+            Message message = new Message();
+
+            foreach (var entity in entities)
+            {
+                message.body = entity.Body;
+                message.time = entity.Time;
+                message.authorNickName = entity.AuthorNickName;
+                output.Add(message);
+            }
+            return output;
         }
 
         public static async Task<string> DisplayTableRecordsAsync(CloudTable table)

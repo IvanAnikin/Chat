@@ -50,12 +50,15 @@ namespace Server.Controllers
         [HttpPost("SendMessage")]
         public void Post(string text, string nickname, string chatName, string guid)
         {
+            
             Message message = new Message
             {
                 time = DateTime.UtcNow.ToLongTimeString(),
                 authorNickName = nickname,
                 body = text
             };
+
+            if (nickname == "") message.authorNickName = "Anonymous";
 
             _chatManager.StoreMessageAsync(chatName, message, guid);
         }

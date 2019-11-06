@@ -45,9 +45,9 @@ namespace Server.Controllers
         }
         */
         [HttpGet("GetAllChats")]
-        public List<String> GetAllChats()
+        public async Task<List<string>> GetAllChatsAsync()
         {
-            return _chatManager.GetChats();
+            return await _chatManager.GetChatsAsync();
         }
 
         [HttpGet("GetNew")]
@@ -102,6 +102,11 @@ namespace Server.Controllers
         public async Task<List<string>> DBGetAllChats()
         {
             return await _chatManager.DBGetAllChats();
+        }
+        [HttpGet("DBTESTgetmessages")]
+        public List<Message> DBGetChatsMessages(string chatName)
+        {
+            return _chatManager.DBGetChatsMessages(chatName);
         }
     }
 }
