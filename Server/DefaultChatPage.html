@@ -89,6 +89,8 @@
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
+                document.getElementById("messageInput").value = '';
+
                 http.send(params);
             }
         }
