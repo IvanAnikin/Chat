@@ -83,9 +83,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        const file = document.getElementById("imageIMG").src;
+        file.name = "photo.png";
+
         blobService.createBlockBlobFromBrowserFile(containerName,
             'photo-test-name',
-            document.getElementById("imageIMG"),
+            file,
             (error, result) => {
                 if (error) {
                     // Handle blob error
@@ -115,6 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
 
         var snap = takeSnapshot();
+
+        alert(snap);
 
         snapp = snap;
 
