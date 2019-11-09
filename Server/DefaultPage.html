@@ -113,9 +113,16 @@
             window.location.href = url;
         }
 
-        function loadVideoPage() {
+        function loadPhotoTakePage() {
             BBCremove();
-            var url = "/api/Video";
+            var url = "/api/Video/takePhoto";
+
+            window.location.href = url;
+        }
+
+        function loadPhotoUploadPage() {
+            BBCremove();
+            var url = "/api/Video/upload";
 
             window.location.href = url;
         }
@@ -228,8 +235,10 @@
         <div class="col-2">
             <p id="myParagraph3">Want to play a game? Click down here.</p>
             <button onclick="loadGamesPage()" id="myButtonStart">Game</button>
-            <p id="myParagraph3">Want to have some fun with your camera? Click under the text.</p>
-            <button onclick="loadVideoPage()" id="myButtonStart">Video</button>
+            <p id="myParagraph3">Want to download a photo taken here? Click under the text.</p>
+            <button onclick="loadPhotoTakePage()" id="myButtonStart">Video</button>
+            <p id="myParagraph3">Want to upload a photo from your PC to cloud? Click under the text.</p>
+            <button onclick="loadPhotoUploadPage()" id="myButtonStart">Video</button>
         </div>
 
 

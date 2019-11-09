@@ -102,6 +102,24 @@ namespace Server.Controllers
             }
         }
 
+        [HttpGet("takePhoto")]
+        public ContentResult TakePhoto()
+        {
+            string text;
+            var fileStream = new FileStream(@"photoTake.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+
         [HttpGet("string")]
         public string String()
         {
