@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Upload is successful');
                 }
             });
-
     });
 
 
