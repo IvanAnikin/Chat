@@ -62,6 +62,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    function dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    }
+
     send_btn.addEventListener("click", function (e) {
 
         const account = {
@@ -73,22 +82,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
-        var containerName = 'test-take-send';
+        //var containerName = 'test-take-send';
+        var containerName = 'js-photo-upload-test';
 
-        blobService.createContainerIfNotExists(containerName, (error, container) => {
+
+        //const file = document.getElementById("imageIMG").src;
+        //file.name = "photo.png";
+
+        /*blobService.createContainerIfNotExists(containerName, (error, container) => {
             if (error) {
                 // Handle create container error
+                Console.log("Error creating container: " + error);
             } else {
                 console.log(container.name);
             }
-        });
+        });*/
 
-        const file = document.getElementById("imageIMG").src;
-        file.name = "photo.png";
+
+
+        var blob = dataURLtoBlob(snapp);
+
+        var fd = new File([blob], "selfie.png");
+        //alert(fd);
 
         blobService.createBlockBlobFromBrowserFile(containerName,
-            'photo-test-name',
-            file,
+            "selfie.png",
+            fd,
             (error, result) => {
                 if (error) {
                     // Handle blob error
@@ -110,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
         showVideo();
 
     });
-
 
     take_photo_btn.addEventListener("click", function(e){
 
