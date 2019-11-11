@@ -102,12 +102,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var blob = dataURLtoBlob(snapp);
 
-        var fd = new File([blob], "selfie.png");
-        //alert(fd);
+        let file;
+        var blobName = "selfie.png"; //GUID !!!
+        
+
+        if (!navigator.msSaveBlob) { // detect if not Edge
+            file = new File([blob], blobName, { type: document.image });
+        } else {
+            //file = new Blob([blob], { type: document.image });
+            //file = blobToFile(file, blobName)
+            //file = blob;
+            file = new Blob([blob], { type: 'image/png' });
+            //file.type = 'image/png';
+        }
+
 
         blobService.createBlockBlobFromBrowserFile(containerName,
             "selfie.png",
-            fd,
+            file,
             (error, result) => {
                 if (error) {
                     // Handle blob error
