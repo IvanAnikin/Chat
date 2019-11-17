@@ -112,8 +112,13 @@ document.addEventListener('DOMContentLoaded', function () {
             //file = new Blob([blob], { type: document.image });
             //file = blobToFile(file, blobName)
             //file = blob;
-            file = new Blob([blob], { type: 'image/png' });
             //file.type = 'image/png';
+
+            file = new Blob([blob], { type: 'image/png' });
+            file = blobToFile(blob, blobName);
+            //file = this.blobToFile(file, blobName);
+
+            //file = new File([blob], blobName, { type: document.image });
         }
 
 
@@ -128,6 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
     });
+    function blobToFile(blob, name) {
+        const formData = new FormData();
+        formData.set('file', blob, name);
+        return formData.get('file');
+    }
 
 
     // Mobile browsers cannot play video without user input,
@@ -148,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var snap = takeSnapshot();
 
-        alert(snap);
+        //alert(snap);
 
         snapp = snap;
 
