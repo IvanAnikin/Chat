@@ -8,9 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
         take_photo_btn = document.querySelector('#take-photo'),
         delete_photo_btn = document.querySelector('#delete-photo'),
         download_photo_btn = document.querySelector('#download-photo'),
-        error_message = document.querySelector('#error-message');
-        send_btn = document.getElementById("sendPhotoBtn");
+        error_message = document.querySelector('#error-message'),
+        send_btn = document.getElementById("sendPhotoBtn"),
         upload_btn = document.getElementById("uploadWithApiBtn");
+
+
+    sessionId = document.getElementById("sesionIdTextArea").innerText;
+    nickName = document.getElementById("nickname").innerHTML;
+    chatName = document.getElementById("header").innerText;
     
 
     // The getUserMedia interface is used for handling camera input.
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
-        var containerName = document.getElementById("header").innerText.toString();
+        var containerName = chatName;
 
         /*blobService.createContainerIfNotExists(containerName, (error, container) => {
             if (error) {
@@ -175,6 +180,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Upload is successful');
                 }
             });
+
+
+        if (blobName) {
+            var http = new XMLHttpRequest();
+            var url = '/api/Chat/SendMessage';
+            var params = "?text=" + blobName + "&nickname=" + nickName + "&chatName=" + chatName + "&guid=" + sessionId + "isPicture=true";
+            http.open('POST', url + params, true);
+
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            document.getElementById("messageInput").value = '';
+
+            http.send(params);
+        }
+
     });
     function blobToFile(blob, name) {
         const formData = new FormData();

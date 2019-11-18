@@ -21,6 +21,7 @@
 
             document.getElementById("header").innerHTML = chatName;
             document.getElementById("nickname").innerHTML = "Nickname: " + nickname;
+            
             if (nickname == "") {
                 document.getElementById("nickname").innerHTML = "Nickname: Anonymous";
                 nickname = "Anonymous";
@@ -33,6 +34,7 @@
                     var jsonData = JSON.parse(xhttp.responseText);
 
                     sessionId = jsonData.sessionId;
+                    document.getElementById("sesionIdTextArea").innerText = sessionId;
 
                     messages = jsonData.lastMessages;
 
@@ -87,7 +89,7 @@
             if (document.getElementById("messageInput").value) {
                 var http = new XMLHttpRequest();
                 var url = '/api/Chat/SendMessage';
-                var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId;
+                var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId + "isPicture=false";
                 http.open('POST', url + params, true);
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -265,6 +267,7 @@
             </form>
 
             <div id="results">Your captured image will appear here...</div>
+            <textarea style="visibility:hidden;" id="sesionIdTextArea"></textarea>
 
         </div>
 

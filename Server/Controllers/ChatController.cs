@@ -48,14 +48,15 @@ namespace Server.Controllers
         public async Task<Message> GetNew(string sessionId, string chatName) => await _chatManager.GetNewMessageAsync(chatName, sessionId);
 
         [HttpPost("SendMessage")]
-        public void Post(string text, string nickname, string chatName, string guid)
+        public void Post(string text, string nickname, string chatName, string guid, bool isPicture)
         {
-            
+
             Message message = new Message
             {
                 time = DateTime.UtcNow.ToLongTimeString(),
                 authorNickName = nickname,
-                body = text
+                body = text,
+                isPicture = isPicture
             };
 
             if (nickname == "") message.authorNickName = "Anonymous";

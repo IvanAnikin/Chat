@@ -22,8 +22,11 @@ namespace Server
         public string time;
         public string authorNickName;
         public string body;
+
+        public bool isPicture;
     }
 
+    /*
     public class MessageTableArray : TableEntity
     {
         private string chatName;
@@ -143,7 +146,7 @@ namespace Server
             this.PartitionKey = body;
         }
     }
-
+    */
 
 
     public class MessageTable : TableEntity
