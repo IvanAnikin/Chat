@@ -60,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\uploads\" />
     <Folder Include="Resources\" />
     <Folder Include="wwwroot\labeled_images\" />
     <Folder Include="wwwroot\models\" />

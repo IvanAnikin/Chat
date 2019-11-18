@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
         download_photo_btn = document.querySelector('#download-photo'),
         error_message = document.querySelector('#error-message');
         send_btn = document.getElementById("sendPhotoBtn");
+        upload_btn = document.getElementById("uploadWithApiBtn");
+    
 
     // The getUserMedia interface is used for handling camera input.
     // Some browsers need a prefix so here we're covering all the options
@@ -71,6 +73,53 @@ document.addEventListener('DOMContentLoaded', function () {
         return new Blob([u8arr], { type: mime });
     }
 
+
+    //TESTING - not working - todo: controller to get photo 
+    upload_btn.addEventListener("click", function (e) {
+
+        const account = {
+            name: "notesaccount"
+        };
+        var sas = document.getElementById('sasInput').value;
+
+        const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+
+        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+        //var containerName = 'test-take-send';
+        var containerName = 'js-photo-upload-test';
+
+
+
+        var blob = dataURLtoBlob(snapp);
+
+        let file;
+        var blobName = "selfie.png"; //GUID !!!
+
+        if (!navigator.msSaveBlob) { // detect if not Edge
+            file = new File([blob], blobName, { type: document.image });
+        } else {
+            file = new Blob([blob], { type: 'image/png' });
+        }
+
+
+        data.append('file', file);
+        $.ajax({
+            url: 'api/Video/UploadPhoto',
+            processData: false,
+            contentType: false,
+            data: data,
+            type: 'POST'
+        }).done(function (result) {
+            alert(result);
+        }).fail(function (a, b, c) {
+            console.log(a, b, c);
+        });
+
+
+
+    });
+
     send_btn.addEventListener("click", function (e) {
 
         const account = {
@@ -103,7 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var blob = dataURLtoBlob(snapp);
 
         let file;
-        var blobName = "selfie.png"; //GUID !!!
+        //var blobName = "selfie.png"; //GUID !!!
+        var blobName = uuidstring() + ".png";
+        alert(blobName);
         
 
         if (!navigator.msSaveBlob) { // detect if not Edge
@@ -123,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         blobService.createBlockBlobFromBrowserFile(containerName,
-            "selfie.png",
+            blobName,
             file,
             (error, result) => {
                 if (error) {
@@ -140,6 +191,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    function uuidstring() {
+        return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    
+    
+
+
     // Mobile browsers cannot play video without user input,
     // so here we're using a button to start it manually.
     start_camera.addEventListener("click", function(e){
@@ -151,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showVideo();
 
     });
-
+    
     take_photo_btn.addEventListener("click", function(e){
 
         e.preventDefault();

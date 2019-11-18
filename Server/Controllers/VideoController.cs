@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using System.Web;
+using System.Web.Http;
 
 namespace Server.Controllers
 {
@@ -119,6 +121,29 @@ namespace Server.Controllers
                 Content = text
             };
         }
+
+        /*[HttpPost("uploadPhoto")]
+        public string UploadFile()
+        {
+            var file = System.Web.HttpContext.Current.Request.Files.Count > 0 ?
+                HttpContext.Current.Request.Files[0] : null;
+
+            if (file != null && file.ContentLength > 0)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+
+                var path = Path.Combine(
+                    HttpContext.Current.Server.MapPath("~/uploads"),
+                    fileName
+                );
+
+                file.SaveAs(path);
+            }
+
+            return file != null ? "/uploads/" + file.FileName : null;
+        }*/
+
+
 
         [HttpGet("string")]
         public string String()
