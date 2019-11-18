@@ -131,12 +131,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
-        //var containerName = 'test-take-send';
         var containerName = 'js-photo-upload-test';
 
-
-        //const file = document.getElementById("imageIMG").src;
-        //file.name = "photo.png";
 
         /*blobService.createContainerIfNotExists(containerName, (error, container) => {
             if (error) {
@@ -152,9 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var blob = dataURLtoBlob(snapp);
 
         let file;
-        //var blobName = "selfie.png"; //GUID !!!
         var blobName = uuidstring() + ".png";
-        alert(blobName);
         
 
         if (!navigator.msSaveBlob) { // detect if not Edge
@@ -168,8 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
             file = new Blob([blob], { type: 'image/png' });
             file = blobToFile(blob, blobName);
             //file = this.blobToFile(file, blobName);
-
-            //file = new File([blob], blobName, { type: document.image });
         }
 
 
@@ -219,8 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
 
         var snap = takeSnapshot();
-
-        //alert(snap);
 
         snapp = snap;
 

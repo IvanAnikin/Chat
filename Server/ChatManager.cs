@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Server
 {
@@ -22,6 +23,7 @@ namespace Server
 
         private CloudStorageAccount storageAccount = null;
         CloudTableClient tableClient = null;
+        CloudBlobClient blobClient = null;
 
         public ChatManager(string connectionString)
         {
@@ -30,6 +32,7 @@ namespace Server
             if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
             {
                 tableClient = storageAccount.CreateCloudTableClient();
+                blobClient = storageAccount.CreateCloudBlobClient();
             }
             else
             {
@@ -170,6 +173,10 @@ namespace Server
 
             CloudTable cloudTable = this.tableClient.GetTableReference(chatName);
             await CreateNewTableAsync(cloudTable);
+
+
+            CloudBlobContainer container = this.blobClient.GetContainerReference(chatName);
+            await CreateNewBlobContainerAsync(container);
 
             if (!_chats.ContainsKey(chatName)) // look if there is this chat in DB 
             {
@@ -389,6 +396,26 @@ namespace Server
                 return "Table '" + table.Name + "' already exists";
             }
             return "Table '" + table.Name + "' created";
+        }
+        public static async Task<string> CreateNewBlobContainerAsync(CloudBlobContainer container)
+        {
+            if (!await container.CreateIfNotExistsAsync())
+            {
+                return "Table '" + container.Name + "' already exists";
+            }
+            return "Table '" + container.Name + "' created";
+        }
+
+        public async Task<string> CreateNewBlobContainerTestAsync(string chatName)
+        {
+
+            CloudBlobContainer container = this.blobClient.GetContainerReference(chatName);
+
+            if (!await container.CreateIfNotExistsAsync())
+            {
+                return "Table '" + container.Name + "' already exists";
+            }
+            return "Table '" + container.Name + "' created";
         }
 
     }

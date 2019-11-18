@@ -137,6 +137,14 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPost("CreateContainer")]
+        public async Task<string> CreateContainer(string chatName)
+        {
+            return await _chatManager.CreateNewBlobContainerTestAsync(chatName);
+            
+        }
+
+
         public static async Task<string> DisplayTableRecordsAsync(CloudTable table)
         {
             TableQuery<MessageTable> tableQuery = new TableQuery<MessageTable>();

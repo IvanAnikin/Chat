@@ -221,5 +221,6 @@ namespace Server
         Task<string> DBStoreMessage(string text, string nickname, string chatName);
         Task<List<string>> DBGetAllChats();
         List<Message> DBGetChatsMessages(string chatName);
+        Task<string> CreateNewBlobContainerTestAsync(string chatName);
     }    
 }
