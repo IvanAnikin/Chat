@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
         upload_btn = document.getElementById("uploadWithApiBtn");
 
 
-    sessionId = document.getElementById("sesionIdTextArea").innerText;
-    nickName = document.getElementById("nickname").innerHTML;
-    chatName = document.getElementById("header").innerText;
+    var sessionId = document.getElementById("sesionIdTextArea").innerHTML.toString();
+    var nickName = document.getElementById("nickname").innerHTML.toString();
+    var chatName = document.getElementById("header").innerHTML.toString();
     
 
     // The getUserMedia interface is used for handling camera input.
@@ -136,7 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
-        var containerName = chatName;
+        chatName = document.getElementById("header").innerHTML.toString();
+        var containerName = chatName.toString();
 
         /*blobService.createContainerIfNotExists(containerName, (error, container) => {
             if (error) {
@@ -245,10 +246,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set the href attribute of the download button to the snap url.
         download_photo_btn.href = snap;
 
+        /*
         document.getElementById('results').innerHTML =
             '<h2>Here is your image:</h2>' +
             '<img id="imageIMG" src="' + snap + '"/>';
-
+        */
         // Pause video playback of stream.
         video.pause();
 
