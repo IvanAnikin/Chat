@@ -20,14 +20,16 @@ namespace Server
         private ConcurrentDictionary<string, BufferBlock<string>> _bufferBlocksChat = new ConcurrentDictionary<string, BufferBlock<string>>();
 
         private readonly string connectionString;
+        private readonly string sas;
 
         private CloudStorageAccount storageAccount = null;
         CloudTableClient tableClient = null;
         CloudBlobClient blobClient = null;
 
-        public ChatManager(string connectionString)
+        public ChatManager(string connectionString, string inputsas)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException("ConnectionString is null");
+            this.sas = inputsas ?? throw new ArgumentNullException("Sas is null");
 
             if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
             {
@@ -108,7 +110,12 @@ namespace Server
             {
                 
             }
-            return new NewSessionResult { sessionId = guid, lastMessages = outputMessages};
+            return new NewSessionResult { sessionId = guid, lastMessages = outputMessages, sas = sas};
+        }
+
+        public string GetSasTest()
+        {
+            return sas;
         }
 
         

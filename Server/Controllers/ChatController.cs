@@ -69,5 +69,11 @@ namespace Server.Controllers
 
         [HttpPost("BBremove")] //remove bufferBlockChats /when leaving default page
         public void BBremove(string sessionId) => _chatManager.BBremove(sessionId);
+
+        [HttpGet("GetSasTest")]
+        public string GetSasTest()
+        {
+            return _chatManager.GetSasTest();
+        }
     }
 }

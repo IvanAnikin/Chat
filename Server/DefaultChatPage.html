@@ -11,6 +11,11 @@
         var chatName = "";
         var nickname = "";
 
+        var ChatBlobContainerLink = "";
+
+        var sas = "";
+        
+
         function OnLoad() {
             messagesOnPage = ["Your messages will be displayed here.."];
             var xhttp = new XMLHttpRequest();
@@ -27,6 +32,15 @@
                 nickname = "Anonymous";
             }
             document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+
+            ChatBlobContainerLink = "https://notesaccount.blob.core.windows.net/" + chatName;
+            alert(ChatBlobContainerLink);
+
+
+            const account = {
+                name: "notesaccount"
+            };
+            
 
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -45,11 +59,34 @@
 
                     document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
 
+                    sas = jsonData.sas;
+                    document.getElementById("sasTextArea").textContent = sas;
+
+                    //sas = "?sv=2019-02-02&ss=bfqt&srt=sco&sp=rwdlacup&se=2020-11-10T23:26:40Z&st=2019-11-20T15:26:40Z&spr=https&sig=bbrPlg6qbFktyD0%2FzgMbpPMO7%2B72wVFFE2dS61XWET8%3D";
+
+
+                    const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+
+                    var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+                    blobService.listBlobsSegmented(chatName, null, (error, results) => {
+                        if (error) {
+                            // Handle list blobs error
+                        } else {
+                            results.entries.forEach(blob => {
+                                alert(blob.name);
+                            });
+                        }
+                    });
+
+
                     getLastMessage();
                 }
             };
             xhttp.open("GET", "/api/Chat/LoadChat" + "?chatName=" + chatName, true);
             xhttp.send();
+
+            
         }
 
         document.addEventListener('keyup', function (event) {
@@ -292,6 +329,7 @@
 
             <div id="results">Your captured image will appear here...</div>
             <textarea style="visibility:hidden;" id="sesionIdTextArea"></textarea>
+            <textarea style="visibility:hidden;" id="sasTextArea"></textarea>
 
         </div>
 

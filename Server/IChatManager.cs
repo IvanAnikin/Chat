@@ -10,6 +10,7 @@ namespace Server
     {
         public string sessionId;
         public List<Message> lastMessages;
+        public string sas;
     }
     public class NewSessionResultChats
     {
@@ -225,5 +226,6 @@ namespace Server
         Task<List<string>> DBGetAllChats();
         List<Message> DBGetChatsMessages(string chatName);
         Task<string> CreateNewBlobContainerTestAsync(string chatName);
+        string GetSasTest();
     }    
 }

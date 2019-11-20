@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // References to all the element we will need.
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var sessionId = document.getElementById("sesionIdTextArea").innerHTML.toString();
     var nickName = document.getElementById("nickname").innerHTML.toString();
     var chatName = document.getElementById("header").innerHTML.toString();
+    var sas = document.getElementById("sasTextArea").innerHTML.toString();
     
 
     // The getUserMedia interface is used for handling camera input.
@@ -130,16 +132,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const account = {
             name: "notesaccount"
         };
-        var sas = document.getElementById('sasInput').value;
+        //var sas = document.getElementById('sasInput').value;
 
         const blobUri = 'https://' + account.name + '.blob.core.windows.net';
 
-        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
-
         chatName = document.getElementById("header").innerHTML.toString();
         sessionId = document.getElementById("sesionIdTextArea").innerHTML.toString();
+        sas = document.getElementById("sasTextArea").innerHTML.toString();
         nickName = document.getElementById("nickname").innerHTML.toString();
         var containerName = chatName.toString();
+
+        var parser = new DOMParser;
+        var dom = parser.parseFromString(
+            '<!doctype html><body>' + sas,
+            'text/html');
+        var newSas = dom.body.textContent;
+
+
+        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, newSas);
         
 
         /*blobService.createContainerIfNotExists(containerName, (error, container) => {
@@ -180,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
             (error, result) => {
                 if (error) {
                     // Handle blob error
+                    alert(error.toString());
                 } else {
                     console.log('Upload is successful');
                 }
