@@ -137,7 +137,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
         chatName = document.getElementById("header").innerHTML.toString();
+        sessionId = document.getElementById("sesionIdTextArea").innerHTML.toString();
+        nickName = document.getElementById("nickname").innerHTML.toString();
         var containerName = chatName.toString();
+        
 
         /*blobService.createContainerIfNotExists(containerName, (error, container) => {
             if (error) {
@@ -182,19 +185,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+        var http = new XMLHttpRequest();
+        var url = '/api/Chat/SendMessage';
 
-        if (blobName) {
-            var http = new XMLHttpRequest();
-            var url = '/api/Chat/SendMessage';
-            var params = "?text=" + blobName + "&nickname=" + nickName + "&chatName=" + chatName + "&guid=" + sessionId + "isPicture=true";
-            http.open('POST', url + params, true);
+        var params = "?text=" + blobName + "&nickname=" + nickName + "&chatName=" + containerName + "&guid=" + sessionId + "isPicture=true";
+        http.open('POST', url + params, true);
 
-            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-            document.getElementById("messageInput").value = '';
+        document.getElementById("messageInput").value = '';
 
-            http.send(params);
-        }
+        http.send(params);
+        
 
     });
     function blobToFile(blob, name) {
