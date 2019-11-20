@@ -78,6 +78,9 @@
     <Content Update="wwwroot\assets\js\script.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\assets\selfie.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\azure-storage.blob.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

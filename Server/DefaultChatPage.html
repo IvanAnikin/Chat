@@ -156,7 +156,8 @@
         }
 
         .col-3 {
-            width: 10%;
+            width: 30%;
+            float: right;
         }
 
         .col-4 {
@@ -204,6 +205,29 @@
             width: 400px;
             height: 200px;
         }
+
+
+        div.gallery {
+		  margin: 5px;
+		  border: 1px solid #ccc;
+		  float: left;
+		  width: 180px;
+		}
+
+		div.gallery:hover {
+		  border: 1px solid #777;
+		}
+
+		div.gallery img {
+		  width: 100%;
+		  height: auto;
+		}
+
+		div.desc {
+		  padding: 15px;
+		  text-align: center;
+		}
+
     </style>
 
     <title>Chat Server</title>
@@ -271,7 +295,18 @@
 
         </div>
 
-    </div>
-    <script defer src="/assets/js/script2.js"></script>
+        <div class="col-3">
+
+            <div class="gallery">
+                <a target="_blank">
+                    <img src="/assets/selfie.png" alt="Cinque Terre" width="600" height="400">
+                </a>
+                <div class="desc">Add a description of the image here</div>
+            </div>
+
+        </div>
+
+        </div>
+        <script defer src="/assets/js/script2.js"></script>
 </body>
 </html>

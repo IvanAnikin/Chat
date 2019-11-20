@@ -92,15 +92,13 @@ namespace Server
                     output.Add(message);
                 }
 
-                var messages = _chats[chatName];
-
-                if (output.Count <= 10)
+                if (output.Count <= count)
                 {
                     outputMessages = output;
                 }
                 else
                 {
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         outputMessages.Add(output[output.Count - 10 + i]);
                     }
