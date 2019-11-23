@@ -67,13 +67,16 @@
 
                     var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
+
+                    /*
                     var reader = new FileReader();
                     reader.addEventListener("load", function() {
                         document.getElementById("testImage").innerHTML += "<img src=\"" + reader.result + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" >";
                     });
+                    */
                     
-
-                    /*var i = 0;
+                    var blockBlobUrl = "";
+                    var i = 0;
                     blobService.listBlobsSegmented(chatName, null, (error, results) => {
                         if (error) {
                             // Handle list blobs error
@@ -81,7 +84,10 @@
                             results.entries.forEach(blob => {
                                 if (i == 0)
                                 {
-                                    reader.readAsDataURL(blob);  //ADD IMAGE IN IMG - or first donwload, then display 
+                                    blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
+                                    alert(blockBlobUrl);
+                                    document.getElementById("testImage").innerHTML += "<img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" >";
+                                    //reader.readAsDataURL(blob);  //ADD IMAGE IN IMG - or first donwload, then display 
                                     alert(blob.name);
                                 }
                                 //alert(blob.name);
@@ -91,9 +97,9 @@
                             });
                         }
                     });
-                    */
+                   
 
-
+                    /*
                     fetch("https://notesaccount.blob.core.windows.net/paintball/?restype=container&comp=list")
                     .then(response => response.text())
                     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
@@ -103,7 +109,7 @@
                                 console.log(blobUrl);
                             });
                         })
-
+                    */
 
                     getLastMessage();
                 }
