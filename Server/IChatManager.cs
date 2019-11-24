@@ -227,5 +227,7 @@ namespace Server
         List<Message> DBGetChatsMessages(string chatName);
         Task<string> CreateNewBlobContainerTestAsync(string chatName);
         string GetSasTest();
+        Message GetLastMessageTest(string chatName, int count);
+        List<MessageTable> GetMessageTableTest(string chatName);
     }    
 }

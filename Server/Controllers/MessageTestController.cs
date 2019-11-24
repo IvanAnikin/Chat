@@ -229,5 +229,17 @@ namespace Server.Controllers
             //Console.WriteLine("Table {0} created", table.Name);
             return "Table '" + table.Name + "' created";
         }
+
+        //TESTING
+        [HttpGet("getMessageTest")]
+        public Message GetMessageTest(string chatName, int count)
+        {
+            return _chatManager.GetLastMessageTest(chatName, count);
+        }
+        [HttpGet("getMessageTableTest")]
+        public List<MessageTable> GetMessageTableTest(string chatName)
+        {
+            return _chatManager.GetMessageTableTest(chatName);
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Server
@@ -78,19 +79,39 @@ namespace Server
             _chatSessions[chatName].Add(guid);
 
             List<Message> outputMessages = new List<Message>();
+            List<Message> output = new List<Message>();
 
 
             try
             {
                 var table = tableClient.GetTableReference(chatName);
                 TableContinuationToken token = null;
-                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                //var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
                 var entities = new List<MessageTable>();
-                entities.AddRange(queryResult.Result);
+                //entities.AddRange(queryResult.Result);
 
                 Message message = new Message();
 
-                List<Message> output = new List<Message>();
+                TableContinuationToken token = null;
+                do
+                {
+                    var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                    entities.AddRange(queryResult.Results);
+                    token = queryResult.ContinuationToken;
+                } while (token != null);
+
+                /*
+
+                     ____     ___    _      __     __  _____     ____    ____     ___    ____    _       _____   __  __ 
+                    / ___|   / _ \  | |     \ \   / / | ____|   |  _ \  |  _ \   / _ \  | __ )  | |     | ____| |  \/  |
+                    \___ \  | | | | | |      \ \ / /  |  _|     | |_) | | |_) | | | | | |  _ \  | |     |  _|   | |\/| |
+                    ___) | | |_| | | |___    \ V /   | |___    |  __/  |  _ <  | |_| | | |_) | | |___  | |___  | |  | |
+                    |____/   \___/  |_____|    \_/    |_____|   |_|     |_| \_\  \___/  |____/  |_____| |_____| |_|  |_|
+
+                */
+
+
+                /*
                 foreach (var entity in entities)
                 {
                     message.body = entity.Body;
@@ -98,24 +119,31 @@ namespace Server
                     message.authorNickName = entity.AuthorNickName;
                     output.Add(message);
                 }
+                */
 
-                if (output.Count <= count)
+                /*for(int i=0; i<entities.Count; i++)
                 {
-                    outputMessages = output;
+                    output[i].body = entities[i].Body;
+                    output[i].time = entities[i].Time;
+                    output[i].authorNickName = entities[i].AuthorNickName;
                 }
-                else
+                */
+                for (int i = 0; i < entities.Count; i++)
                 {
-                    for (int i = 0; i < count; i++)
-                    {
-                        outputMessages.Add(output[output.Count - 10 + i]);
-                    }
+                    message.body = entities[i].Body;
+                    message.time = entities[i].Time;
+                    message.authorNickName = entities[i].AuthorNickName;
+                    output.Add(message);
                 }
+
+
+                
             }
             catch
             {
                 
             }
-            return new NewSessionResult { sessionId = guid, lastMessages = outputMessages, sas = sas};
+            return new NewSessionResult { sessionId = guid, lastMessages = output, sas = sas};
         }
 
         public string GetSasTest()
@@ -171,22 +199,13 @@ namespace Server
 
         public async void CreateChat(string chatName)
         {
-            /* DB 
-            if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
-            {
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-                CloudTable cloudTable = tableClient.GetTableReference(chatName);
-                await CreateNewTableAsync(cloudTable);
-            }
-            */ 
 
             CloudTable cloudTable = this.tableClient.GetTableReference(chatName);
             await CreateNewTableAsync(cloudTable);
 
-
             CloudBlobContainer container = this.blobClient.GetContainerReference(chatName);
             await CreateNewBlobContainerAsync(container);
+
 
             if (!_chats.ContainsKey(chatName)) // look if there is this chat in DB 
             {
@@ -426,6 +445,50 @@ namespace Server
                 return "Table '" + container.Name + "' already exists";
             }
             return "Table '" + container.Name + "' created";
+        }
+
+        //TESTTING 
+        public Message GetLastMessageTest(string chatName, int count)
+        {
+            Message message = new Message();
+            try
+            {
+                var table = tableClient.GetTableReference(chatName);
+                TableContinuationToken token = null;
+                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                var entities = new List<MessageTable>();
+                entities.AddRange(queryResult.Result);
+
+
+                MessageTable messageTable = entities[count];
+
+                message.body = messageTable.Body;
+                message.time = messageTable.Time;
+                message.authorNickName = messageTable.AuthorNickName;
+            }
+            catch
+            {
+
+            }
+            return message;
+        }
+
+        public List<MessageTable> GetMessageTableTest(string chatName)
+        {
+            var entities = new List<MessageTable>();
+            try
+            {
+                var table = tableClient.GetTableReference(chatName);
+                TableContinuationToken token = null;
+                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                
+                entities.AddRange(queryResult.Result);
+            }
+            catch
+            {
+
+            }
+            return entities;
         }
 
     }

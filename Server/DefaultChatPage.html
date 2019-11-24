@@ -110,7 +110,7 @@
 
                     var message = JSON.parse(xhttp.responseText);
 
-                    if (message.isPicture == "false") {
+                    if (message.isPicture == false) {
                         messagesOnPage.push(message.time + "//    " + message.authorNickName + ":  " + message.body);
 
                         document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
