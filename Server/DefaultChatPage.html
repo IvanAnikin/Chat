@@ -12,6 +12,7 @@
         var nickname = "";
 
         var ChatBlobContainerLink = "";
+        var namesOfBlobs = [];
 
         var sas = "";
         
@@ -66,41 +67,22 @@
                     const blobUri = 'https://' + account.name + '.blob.core.windows.net';
 
                     var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
-
-
-                    /*
-                    var reader = new FileReader();
-                    reader.addEventListener("load", function() {
-                        document.getElementById("testImage").innerHTML += "<img src=\"" + reader.result + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" >";
-                    });
-                    */
                     
                     var blockBlobUrl = "";
+                    
 
                     blobService.listBlobsSegmented(chatName, null, (error, results) => {
                         if (error) {
                             // Handle list blobs error
                         } else {
                             results.entries.forEach(blob => {
+                                namesOfBlobs.push(blob.name);
                                 blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
-                                //alert(blockBlobUrl);
+                                
                                 document.getElementById("imagesColumn").innerHTML += "<div class=\"gallery\"><a target=\"_blank\" ><img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" ></a></div>"
                             });
                         }
                     });
-                   
-
-                    /*
-                    fetch("https://notesaccount.blob.core.windows.net/paintball/?restype=container&comp=list")
-                    .then(response => response.text())
-                    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-                        .then(xml => {
-                            let blobList = Array.from(xml.querySelectorAll("Url")); //.getAttribute("Url");
-                            blobList.forEach(async blobUrl => {
-                                console.log(blobUrl);
-                            });
-                        })
-                    */
 
                     getLastMessage();
                 }
@@ -112,11 +94,6 @@
         }
 
         document.addEventListener('keyup', function (event) {
-            /*if (event.defaultPrevented) {
-                return;
-            }
-            */
-            //alert("Testing");
             var key = event.key || event.keyCode;
 
             if (key === "Enter") {
@@ -133,10 +110,35 @@
 
                     var message = JSON.parse(xhttp.responseText);
 
-                    messagesOnPage.push(message.time + "//    " + message.authorNickName + ":  " + message.body);
+                    if (message.isPicture == "false") {
+                        messagesOnPage.push(message.time + "//    " + message.authorNickName + ":  " + message.body);
 
-                    document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+                        document.getElementById("chatWindow").innerHTML = messagesOnPage.join(" </br>");
+                    }
+                    else {
+                        const account = {
+                            name: "notesaccount"
+                        };
 
+                        const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+                        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+                    
+                        var blockBlobUrl = "";
+                        
+
+                        blobService.listBlobsSegmented(chatName, null, (error, results) => {
+                            if (error) {
+                                // Handle list blobs error
+                            } else {
+                                results.entries.forEach(blob => {
+                                    blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
+
+                                    if (!namesOfBlobs.includes(blob.name)) document.getElementById("imagesColumn").innerHTML += "<div class=\"gallery\"><a target=\"_blank\" ><img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" ></a></div>"
+                                });
+                            }
+                        });
+                    }
+                    
                     getLastMessage();
                 }
             };
@@ -354,10 +356,6 @@
                 <a target="_blank">
                     <img src="/assets/selfie.png" alt="Cinque Terre" width="600" height="400">
                 </a>
-            </div>
-
-            <div class="gallery">
-                <a target="_blank" id="testImage"></a>
             </div>
 
         </div>

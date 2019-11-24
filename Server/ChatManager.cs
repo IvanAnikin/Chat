@@ -50,9 +50,14 @@ namespace Server
                 _chats[chatName] = new List<Message>(); 
             }
             _chats[chatName].Add(message);
-            //DB
-            await DBStoreMessage(message.body, message.authorNickName, chatName);
-            //DB
+
+            if(message.isPicture == false)
+            {
+                //DB
+                await DBStoreMessage(message.body, message.authorNickName, chatName);
+                //DB
+            }
+
             if (_chatSessions.TryGetValue(chatName, out var sessionIds))
             {
                 foreach (var sessionId in sessionIds)
