@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var http = new XMLHttpRequest();
         var url = '/api/Chat/SendMessage';
 
-        var params = "?text=" + blobName + "&nickname=" + nickName + "&chatName=" + containerName + "&guid=" + sessionId + "isPicture=true";
+        var params = "?text=" + blobName + "&nickname=" + nickName + "&chatName=" + containerName + "&guid=" + sessionId + "&isPicture=true";
         http.open('POST', url + params, true);
 
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

@@ -26,7 +26,7 @@
             nickname = urlParams.get("nickname");
 
             document.getElementById("header").innerHTML = chatName;
-            document.getElementById("nickname").innerHTML = "Nickname: " + nickname;
+            document.getElementById("nickname").innerHTML = nickname;
             
             if (nickname == "") {
                 document.getElementById("nickname").innerHTML = "Nickname: Anonymous";
@@ -303,6 +303,7 @@
 <body onload="OnLoad()">
     <div class="header">
         <h1 id="header">Server</h1>
+        <h4>Nickname:</h4>
         <h4 id="nickname"></h4>
     </div>
 

@@ -86,64 +86,40 @@ namespace Server
             {
                 var table = tableClient.GetTableReference(chatName);
                 TableContinuationToken token = null;
-                //var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
+                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
                 var entities = new List<MessageTable>();
-                //entities.AddRange(queryResult.Result);
-
-                Message message = new Message();
-
-                TableContinuationToken token = null;
-                do
-                {
-                    var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<MessageTable>(), token);
-                    entities.AddRange(queryResult.Results);
-                    token = queryResult.ContinuationToken;
-                } while (token != null);
-
-                /*
-
-                     ____     ___    _      __     __  _____     ____    ____     ___    ____    _       _____   __  __ 
-                    / ___|   / _ \  | |     \ \   / / | ____|   |  _ \  |  _ \   / _ \  | __ )  | |     | ____| |  \/  |
-                    \___ \  | | | | | |      \ \ / /  |  _|     | |_) | | |_) | | | | | |  _ \  | |     |  _|   | |\/| |
-                    ___) | | |_| | | |___    \ V /   | |___    |  __/  |  _ <  | |_| | | |_) | | |___  | |___  | |  | |
-                    |____/   \___/  |_____|    \_/    |_____|   |_|     |_| \_\  \___/  |____/  |_____| |_____| |_|  |_|
-
-                */
-
-
-                /*
-                foreach (var entity in entities)
-                {
-                    message.body = entity.Body;
-                    message.time = entity.Time;
-                    message.authorNickName = entity.AuthorNickName;
-                    output.Add(message);
-                }
-                */
-
-                /*for(int i=0; i<entities.Count; i++)
-                {
-                    output[i].body = entities[i].Body;
-                    output[i].time = entities[i].Time;
-                    output[i].authorNickName = entities[i].AuthorNickName;
-                }
-                */
+                entities.AddRange(queryResult.Result);
+                
                 for (int i = 0; i < entities.Count; i++)
                 {
-                    message.body = entities[i].Body;
-                    message.time = entities[i].Time;
-                    message.authorNickName = entities[i].AuthorNickName;
+                    MessageTable messageTable = entities[i];
+                    Message message = new Message();
+
+                    message.body = messageTable.Body;
+                    message.time = messageTable.Time;
+                    message.authorNickName = messageTable.AuthorNickName;
                     output.Add(message);
                 }
+                
 
-
+                if(output.Count <= count)
+                {
+                    outputMessages = output;
+                }
+                else
+                {
+                    for(int i=output.Count-count-1; i<output.Count; i++)
+                    {
+                        outputMessages.Add(output[i]);
+                    }
+                }
                 
             }
             catch
             {
                 
             }
-            return new NewSessionResult { sessionId = guid, lastMessages = output, sas = sas};
+            return new NewSessionResult { sessionId = guid, lastMessages = outputMessages, sas = sas};
         }
 
         public string GetSasTest()
@@ -446,6 +422,16 @@ namespace Server
             }
             return "Table '" + container.Name + "' created";
         }
+
+
+
+
+
+
+
+
+
+
 
         //TESTTING 
         public Message GetLastMessageTest(string chatName, int count)
