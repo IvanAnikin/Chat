@@ -76,24 +76,15 @@
                     */
                     
                     var blockBlobUrl = "";
-                    var i = 0;
+
                     blobService.listBlobsSegmented(chatName, null, (error, results) => {
                         if (error) {
                             // Handle list blobs error
                         } else {
                             results.entries.forEach(blob => {
-                                if (i == 0)
-                                {
-                                    blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
-                                    alert(blockBlobUrl);
-                                    document.getElementById("testImage").innerHTML += "<img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" >";
-                                    //reader.readAsDataURL(blob);  //ADD IMAGE IN IMG - or first donwload, then display 
-                                    alert(blob.name);
-                                }
-                                //alert(blob.name);
-                                
-
-                                i++;
+                                blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
+                                //alert(blockBlobUrl);
+                                document.getElementById("imagesColumn").innerHTML += "<div class=\"gallery\"><a target=\"_blank\" ><img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" ></a></div>"
                             });
                         }
                     });
@@ -351,33 +342,22 @@
             </div>
 
             <button id="sendPhotoBtn"> SEND </button>
-            <button id="uploadWithApiBtn"> UPLOAD WITH API </button>
 
-            <form>
-                SAS:<br>
-                <input type="text" id="sasInput"><br>
-            </form>
-
-            <div id="results">Your captured image will appear here...</div>
             <textarea style="visibility:hidden;" id="sesionIdTextArea"></textarea>
             <textarea style="visibility:hidden;" id="sasTextArea"></textarea>
 
         </div>
 
-        <div class="col-3">
+        <div class="col-3" id="imagesColumn">
 
             <div class="gallery">
                 <a target="_blank">
                     <img src="/assets/selfie.png" alt="Cinque Terre" width="600" height="400">
                 </a>
-                <div class="desc">this photo was loaded from root file</div>
             </div>
 
             <div class="gallery">
-                <a target="_blank" id="testImage">
-
-                </a>
-                <div class="desc">this photo was loaded from Azure</div>
+                <a target="_blank" id="testImage"></a>
             </div>
 
         </div>

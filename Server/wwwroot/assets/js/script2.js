@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         delete_photo_btn = document.querySelector('#delete-photo'),
         download_photo_btn = document.querySelector('#download-photo'),
         error_message = document.querySelector('#error-message'),
-        send_btn = document.getElementById("sendPhotoBtn"),
-        upload_btn = document.getElementById("uploadWithApiBtn");
+        send_btn = document.getElementById("sendPhotoBtn")
 
 
     var sessionId = document.getElementById("sesionIdTextArea").innerHTML.toString();
@@ -81,51 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    //TESTING - not working - todo: controller to get photo 
-    upload_btn.addEventListener("click", function (e) {
-
-        const account = {
-            name: "notesaccount"
-        };
-        var sas = document.getElementById('sasInput').value;
-
-        const blobUri = 'https://' + account.name + '.blob.core.windows.net';
-
-        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
-
-        //var containerName = 'test-take-send';
-        var containerName = 'js-photo-upload-test';
-
-
-
-        var blob = dataURLtoBlob(snapp);
-
-        let file;
-        var blobName = "selfie.png"; //GUID !!!
-
-        if (!navigator.msSaveBlob) { // detect if not Edge
-            file = new File([blob], blobName, { type: document.image });
-        } else {
-            file = new Blob([blob], { type: 'image/png' });
-        }
-
-
-        data.append('file', file);
-        $.ajax({
-            url: 'api/Video/UploadPhoto',
-            processData: false,
-            contentType: false,
-            data: data,
-            type: 'POST'
-        }).done(function (result) {
-            alert(result);
-        }).fail(function (a, b, c) {
-            console.log(a, b, c);
-        });
-
-
-
-    });
+    
 
     send_btn.addEventListener("click", function (e) {
 
