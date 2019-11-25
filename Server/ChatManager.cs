@@ -281,7 +281,11 @@ namespace Server
 
                 CloudTable cloudTable = tableClient.GetTableReference(chatName);
 
-                if (await cloudTable.DeleteIfExistsAsync()) return "deleted";
+                CloudBlobClient client = storageAccount.CreateCloudBlobClient();
+
+                CloudBlobContainer container = client.GetContainerReference(chatName); 
+
+                if (await cloudTable.DeleteIfExistsAsync() && await container.DeleteIfExistsAsync()) return "deleted";
                 else return "no such table";
             }
             else

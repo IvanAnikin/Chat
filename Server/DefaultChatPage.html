@@ -12,9 +12,11 @@
         var nickname = "";
 
         var ChatBlobContainerLink = "";
-        var namesOfBlobs = [];
+        var namesOfBlobs = [""];
 
         var sas = "";
+
+        var blobService = null;
         
 
         function OnLoad() {
@@ -66,7 +68,7 @@
 
                     const blobUri = 'https://' + account.name + '.blob.core.windows.net';
 
-                    var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+                    blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
                     
                     var blockBlobUrl = "";
                     
@@ -121,7 +123,7 @@
                         };
 
                         const blobUri = 'https://' + account.name + '.blob.core.windows.net';
-                        var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+                        blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
                     
                         var blockBlobUrl = "";
                         
@@ -131,9 +133,16 @@
                                 // Handle list blobs error
                             } else {
                                 results.entries.forEach(blob => {
+
                                     blockBlobUrl = "https://notesaccount.blob.core.windows.net/" + chatName + "/" + blob.name + sas;
 
-                                    if (!namesOfBlobs.includes(blob.name)) document.getElementById("imagesColumn").innerHTML += "<div class=\"gallery\"><a target=\"_blank\" ><img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" ></a></div>"
+                                    if (!namesOfBlobs.includes(blob.name)) {
+
+                                        document.getElementById("imagesColumn").innerHTML += "<div class=\"gallery\"><a target=\"_blank\" ><img src=\"" + blockBlobUrl + "\" alt=\"Cinque Terre\" width=\"600\" height=\"400\" ></a></div>"
+
+                                        namesOfBlobs.push(blob.name);
+                                    }
+                                    
                                 });
                             }
                         });
@@ -150,7 +159,7 @@
             if (document.getElementById("messageInput").value) {
                 var http = new XMLHttpRequest();
                 var url = '/api/Chat/SendMessage';
-                var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId + "isPicture=false";
+                var params = "?text=" + document.getElementById("messageInput").value + "&nickname=" + nickname + "&chatName=" + chatName + "&guid=" + sessionId + "&isPicture=false";
                 http.open('POST', url + params, true);
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
