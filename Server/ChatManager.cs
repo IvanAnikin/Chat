@@ -430,6 +430,49 @@ namespace Server
 
 
 
+        //AUTHENTIFICATION
+
+        //ADD NEW USER IN DB
+        public async Task<string> DBStoreUser(string login, string hash, string nickname, string level)
+        {
+
+            CloudTable cloudTable = tableClient.GetTableReference("users");
+            //await CreateNewTableAsync(cloudTable);
+
+            UserTable userTable = new UserTable();
+            userTable.Login = login;
+            userTable.Hash = hash;
+            userTable.Nickname = nickname;
+            userTable.Level = level;
+
+            userTable.AssignPartitionKey();
+            userTable.AssignRowKey();
+
+
+            TableOperation tableOperation = TableOperation.Insert(userTable);
+            await cloudTable.ExecuteAsync(tableOperation);
+            return "Record inserted";
+        }
+
+        public List<UserTable> GetUserTableTest()
+        {
+            var entities = new List<UserTable>();
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+                TableContinuationToken token = null;
+                var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<UserTable>(), token);
+
+                entities.AddRange(queryResult.Result);
+            }
+            catch
+            {
+
+            }
+            return entities;
+        }
+
+
 
 
         //FOR COMPRESSING IMAGES TO COMPARE THEM -- IN MLimages solution

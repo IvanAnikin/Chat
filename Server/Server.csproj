@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.6.1" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
@@ -61,7 +62,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\uploads\" />
     <Folder Include="Resources\" />
     <Folder Include="wwwroot\labeled_images\" />
     <Folder Include="wwwroot\models\" />

@@ -206,6 +206,74 @@ namespace Server
         }
     }
 
+    public class UserTable : TableEntity
+    {
+        private string login;
+        private string hash;
+        private string nickname;
+        private string level;
+
+        public string Login
+        {
+            get
+            {
+                return login;
+            }
+
+            set
+            {
+                login = value;
+            }
+        }
+
+        public string Hash
+        {
+            get
+            {
+                return hash;
+            }
+
+            set
+            {
+                hash = value;
+            }
+        }
+
+        public string Nickname
+        {
+            get
+            {
+                return nickname;
+            }
+
+            set
+            {
+                nickname = value;
+            }
+        }
+        public string Level
+        {
+            get
+            {
+                return level;
+            }
+            set
+            {
+                level = value;
+            }
+        }
+
+
+        public void AssignRowKey()
+        {
+            this.RowKey = login;
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = hash;
+        }
+    }
+
     public interface IChatManager
     {
         Task StoreMessageAsync(string chatName, Message message, string guid);
@@ -229,5 +297,7 @@ namespace Server
         string GetSasTest();
         Message GetLastMessageTest(string chatName, int count);
         List<MessageTable> GetMessageTableTest(string chatName);
+        List<UserTable> GetUserTableTest();
+        Task<string> DBStoreUser(string login, string hash, string nickname, string level);
     }    
 }
