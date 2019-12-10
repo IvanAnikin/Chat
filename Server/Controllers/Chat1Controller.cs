@@ -108,5 +108,26 @@ namespace Server.Controllers
         {
             return _chatManager.DBGetChatsMessages(chatName);
         }
+
+
+        //AUTENTIFICATION 
+
+        [HttpGet("NewUser")]
+        public Task<string> Post(string login, string hash, string nickname)
+        {
+            if (nickname == "") nickname = "Anonymous";
+
+            string level = "administrator";
+            //string level = "spectator";
+            //string level = "member";
+
+            return _chatManager.DBStoreUser(login, hash, nickname, level);
+        }
+
+        [HttpGet("getUserTableTest")]
+        public List<UserTable> GetUserTableTest()
+        {
+            return _chatManager.GetUserTableTest();
+        }
     }
 }

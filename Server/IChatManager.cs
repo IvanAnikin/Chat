@@ -299,5 +299,6 @@ namespace Server
         List<MessageTable> GetMessageTableTest(string chatName);
         List<UserTable> GetUserTableTest();
         Task<string> DBStoreUser(string login, string hash, string nickname, string level);
+        Task<string> DeleteAllUsersTestAsync();
     }    
 }

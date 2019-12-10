@@ -144,7 +144,7 @@ namespace Server
 
             foreach (var table in tables)
             {
-                output.Add(table.Name);
+                if (table.Name != "users") output.Add(table.Name);
             }
 
             return new NewSessionResultChats { sessionId = guid, chats = output };
@@ -169,7 +169,7 @@ namespace Server
 
             foreach (var table in tables)
             {
-                output.Add(table.Name);
+                if(table.Name != "users") output.Add(table.Name);
             }
             return output;
         }
@@ -453,7 +453,7 @@ namespace Server
             await cloudTable.ExecuteAsync(tableOperation);
             return "Record inserted";
         }
-
+        //GET USERS TABLE
         public List<UserTable> GetUserTableTest()
         {
             var entities = new List<UserTable>();
@@ -470,6 +470,31 @@ namespace Server
 
             }
             return entities;
+        }
+        public async Task<string> DeleteAllUsersTestAsync()
+        {
+            try
+            {
+                CloudTable table = tableClient.GetTableReference("users");
+                var query = new TableQuery<UserTable>();
+                var result = await table.ExecuteQuerySegmentedAsync(query, null);
+
+                // Create the batch operation.
+                TableBatchOperation batchDeleteOperation = new TableBatchOperation();
+
+                foreach (var row in result)
+                {
+                    batchDeleteOperation.Delete(row);
+                }
+
+                // Execute the batch operation.
+                await table.ExecuteBatchAsync(batchDeleteOperation);
+                return "deleted";
+            }
+            catch(Exception e)
+            {
+                return e.ToString();
+            }
         }
 
 
