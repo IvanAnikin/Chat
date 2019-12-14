@@ -84,33 +84,42 @@
     </style>
 
     <script>
+        function OnLoad() {
+            if (Cookies.get('login') != "" && Cookies.get('login') != null && Cookies.get('password') != "" && Cookies.get('password') != null) {
+                alert("now need to check login: " + Cookies.get('login') + " and password: " + Cookies.get('password'));
+            }
+        }
         function LogIn() {
-            if (document.getElementById("username").value && document.getElementById("password").value) {
+            //document.getElementById("username").value
+            if (true) {
                 var http = new XMLHttpRequest();
                 var url = '/api/Autentification/NewUserPost';
-                    login = albert & hash=hhh & nickname=blue
                 var params = "?login=" + document.getElementById("username").value + "&hash=" + document.getElementById("password").value + "&nickname=" + document.getElementById("username").value;
                 http.open('POST', url + params, true);
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-                document.getElementById("username").value = '';
-                document.getElementById("password").value = '';
+                
 
                 http.send(params);
             }
+            if (document.getElementById("checkBoxRemember").checked == true) LogInSetCookies();
+            else {
+                document.getElementById("username").value = '';
+                document.getElementById("password").value = '';
+            }
         }
         function LogInSetCookies() {
+            
             var login = document.getElementById("username").value;
             var password = document.getElementById("password").value;
+        
+            Cookies.set('login', login, { expires: 7 });
+            Cookies.set('password', password, { expires: 7 }); 
 
-            if (Cookies.get('login') != "" && Cookies.get('login') != null && Cookies.get('password') != "" && Cookies.get('password') != null) {
-                alert("now need to check login: " + Cookies.get('login') + " and password: " + Cookies.get('password'));
-            }
-            else {
-                Cookies.set('login', login, { expires: 7 });
-                Cookies.set('password', password, { expires: 7 }); 
-            }
+            document.getElementById("username").value = '';
+            document.getElementById("password").value = '';
+            
         }
     </script>
 
@@ -119,23 +128,23 @@
 
 </head>
 
-<body>
+<body onload="OnLoad()">
 
-    <form>
+    
         <div class="imgcontainer">
             <img src="/logInAvatar.png" alt="Avatar" class="avatar">
         </div>
 
-        <div class="container">
-            <label for="uname" id="username"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" required>
+        <div>
+            <label ><b>Username</b></label>
+            <input id="username" type="text" placeholder="Enter Username" required>
 
-            <label for="psw" id="password"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
+            <label ><b>Password</b></label>
+            <input id="password" type="password" placeholder="Enter Password" required>
 
-            <button onclick="LogInSetCookies()">Login</button>
+            <button onclick="LogIn()">Login</button>
             <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
+                <input type="checkbox" checked="checked" name="remember" id="checkBoxRemember"> Remember me
             </label>
         </div>
 
@@ -143,7 +152,7 @@
             <button type="button" class="cancelbtn">Cancel</button>
             <span class="psw">Forgot <a href="#">password?</a></span>
         </div>
-    </form>
+    
 
 </body>
 
