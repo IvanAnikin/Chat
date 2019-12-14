@@ -38,15 +38,21 @@ namespace Server.Controllers
         }
 
         [HttpGet("NewUser")]
-        public Task<string> NewUser(string login, string hash, string nickname)
+        public Task<string> NewUser(string login, string hash)
         {
-            if (nickname == "") nickname = "Anonymous";
+            string nickname = login;
 
             string level = "administrator";
             //string level = "spectator";
             //string level = "member";
 
             return _chatManager.DBStoreUser(login, hash, nickname, level);
+        }
+        [HttpGet("CheckCredentials")]
+        public Task<bool> CheckCredentials(string login, string hash)
+        {
+
+            return _chatManager.CheckCredentialsAsync(login, hash);
         }
         [HttpPost("NewUserPost")]
         public void NewUserPost(string login, string hash, string nickname)

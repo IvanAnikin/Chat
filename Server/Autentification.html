@@ -85,8 +85,11 @@
 
     <script>
         function OnLoad() {
-            if (Cookies.get('login') != "" && Cookies.get('login') != null && Cookies.get('password') != "" && Cookies.get('password') != null) {
-                alert("now need to check login: " + Cookies.get('login') + " and password: " + Cookies.get('password'));
+            login = Cookies.get('login');
+            password = Cookies.get('password');
+            if (login != "" && login != null && password != "" && password != null) {
+                alert("now need to check login: " + login + " and password: " + password);
+                checkCredentials(login, password);
             }
         }
         function LogIn() {
@@ -94,7 +97,7 @@
             if (true) {
                 var http = new XMLHttpRequest();
                 var url = '/api/Autentification/NewUserPost';
-                var params = "?login=" + document.getElementById("username").value + "&hash=" + document.getElementById("password").value + "&nickname=" + document.getElementById("username").value;
+                var params = "?login=" + document.getElementById("username").value + "&hash=" + document.getElementById("password").value;
                 http.open('POST', url + params, true);
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -120,6 +123,31 @@
             document.getElementById("username").value = '';
             document.getElementById("password").value = '';
             
+        }
+        function checkCredentials(login , password) {
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const account = {
+                        name: "notesaccount"
+                    };
+
+                    var result = JSON.parse(xhttp.responseText);
+                    if (result == true || result == "true") {
+                        alert("Log in SUCCESSFUL");
+                    }
+                    else {
+                        alert("Log in UNSUCCESSFUL");
+                    }
+
+
+
+                }
+            };
+            xhttp.open("GET", "Autentification/CheckCredentials" + "?login=" + login + "&hash=" + password + true);
+            xhttp.send();
         }
     </script>
 

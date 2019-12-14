@@ -453,6 +453,27 @@ namespace Server
             await cloudTable.ExecuteAsync(tableOperation);
             return "Record inserted";
         }
+        public async Task<bool> CheckCredentialsAsync(string login, string hash)
+        {
+            try {
+                string partitionKey = hash;
+                string rowKey = login;
+                var table = tableClient.GetTableReference("users");
+                TableOperation retrieve = TableOperation.Retrieve<UserTable>(partitionKey, rowKey);
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                if(result.Result != null) return true;
+                else return false;
+
+
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
+
         //GET USERS TABLE
         public List<UserTable> GetUserTableTest()
         {
