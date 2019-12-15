@@ -37,6 +37,24 @@ namespace Server.Controllers
             };
         }
 
+        [HttpGet("SignUpPage")]
+        public ContentResult GetSignUpPage()
+        {
+            string text;
+            var fileStream = new FileStream(@"SignUp.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+
         [HttpGet("NewUser")]
         public Task<string> NewUser(string login, string hash)
         {

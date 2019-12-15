@@ -34,6 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="SignUp.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="face-api.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

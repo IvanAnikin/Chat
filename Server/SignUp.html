@@ -85,15 +85,39 @@
 
     <script>
         function OnLoad() {
-            login = Cookies.get('login');
-            password = Cookies.get('password');
-            if (login != "" && login != null && password != "" && password != null) {
-                alert("now need to check login: " + login + " and password: " + password);
-                checkCredentials(login, password);
+            
+        }
+        function SignUp() {
+            //document.getElementById("username").value
+            if (true) {
+                var http = new XMLHttpRequest();
+                var url = '/api/Autentification/NewUserPost';
+                var params = "?login=" + document.getElementById("username").value + "&hash=" + document.getElementById("password").value;
+                http.open('POST', url + params, true);
+
+                http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                
+
+                http.send(params);
+            }
+            if (document.getElementById("checkBoxRemember").checked == true) SetCookies();
+            else {
+                document.getElementById("username").value = '';
+                document.getElementById("password").value = '';
             }
         }
-        function LogIn(){
+        function SetCookies() {
+            
+            var login = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+        
+            Cookies.set('login', login, { expires: 7 });
+            Cookies.set('password', password, { expires: 7 }); 
 
+            document.getElementById("username").value = '';
+            document.getElementById("password").value = '';
+            
         }
         function checkCredentials(login , password) {
 
@@ -138,7 +162,7 @@
             <label ><b>Password</b></label>
             <input id="password" type="password" placeholder="Enter Password" required>
 
-            <button onclick="LogIn()">Login</button>
+            <button onclick="SignUp()">Sign Up</button>
             <label>
                 <input type="checkbox" checked="checked" name="remember" id="checkBoxRemember"> Remember me
             </label>
