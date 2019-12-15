@@ -92,8 +92,8 @@
                 checkCredentials(login, password);
             }
         }
-        function LogIn(){
-
+        function LogIn() {
+            checkCredentials(document.getElementById("username").value, document.getElementById("password").value);
         }
         function checkCredentials(login , password) {
 
