@@ -31,129 +31,6 @@ namespace Server
         public bool isPicture;
     }
 
-    /*
-    public class MessageTableArray : TableEntity
-    {
-        private string chatName;
-        private string[] message;
-
-        public string ChatName
-        {
-            get
-            {
-                return chatName;
-            }
-
-            set
-            {
-                chatName = value;
-            }
-        }
-        public string[] Message
-        {
-            get
-            {
-                return message;
-            }
-
-            set
-            {
-                message = value;
-            }
-        }
-        public void AssignRowKey()
-        {
-            this.RowKey = message[0];
-        }
-        public void AssignPartitionKey()
-        {
-            this.PartitionKey = message[1];
-        }
-    }
-
-    public class MessageTableNew : TableEntity
-    {
-        private string chatName;
-        private string[]  message;
-
-        public string ChatName
-        {
-            get
-            {
-                return chatName;
-            }
-
-            set
-            {
-                chatName = value;
-            }
-        }
-        public string[] Message
-        {
-            get
-            {
-                return message;
-            }
-
-            set
-            {
-                message = value;
-            }
-        }
-        public void AssignRowKey()
-        {
-            this.RowKey = message[0];
-        }
-        public void AssignPartitionKey()
-        {
-            this.PartitionKey = message[1];
-        }
-    }
-
-    public class MessageTableTest : TableEntity
-    {
-        private string time;
-        private string body;
-
-        public string Time
-        {
-            get
-            {
-                return time;
-            }
-
-            set
-            {
-                time = value;
-            }
-        }
-
-        public string Body
-        {
-            get
-            {
-                return body;
-            }
-
-            set
-            {
-                body = value;
-            }
-        }
-
-
-        public void AssignRowKey()
-        {
-            this.RowKey = time;
-        }
-        public void AssignPartitionKey()
-        {
-            this.PartitionKey = body;
-        }
-    }
-    */
-
-
     public class MessageTable : TableEntity
     {
         private string time;
@@ -278,6 +155,46 @@ namespace Server
         }
     }
 
+    public class ActiveUserTable : TableEntity
+    {
+        private string login;
+        private string userID;
+
+        public string Login
+        {
+            get
+            {
+                return login;
+            }
+
+            set
+            {
+                login = value;
+            }
+        }
+        public string UserID
+        {
+            get
+            {
+                return userID;
+            }
+
+            set
+            {
+                userID = value;
+            }
+        }
+
+        public void AssignRowKey()
+        {
+            this.RowKey = login;
+        }
+        public void AssignPartitionKey()
+        {
+            this.PartitionKey = userID;
+        }
+    }
+
     public interface IChatManager
     {
         Task StoreMessageAsync(string chatName, Message message, string guid);
@@ -301,7 +218,7 @@ namespace Server
         string GetSasTest();
         Message GetLastMessageTest(string chatName, int count);
         List<MessageTable> GetMessageTableTest(string chatName);
-        List<UserTable> GetUserTableTest();
+        List<UserTable> GetUserTableTest(string tableName);
         Task<string> DBStoreUser(string login, string hash, string nickname, string level);
         Task<string> DeleteAllUsersTestAsync();
         Task<bool> CheckCredentialsAsync(string login, string hash);

@@ -144,7 +144,7 @@ namespace Server
 
             foreach (var table in tables)
             {
-                if (table.Name != "users") output.Add(table.Name);
+                if (table.Name != "users" && table.Name != "activeUsers") output.Add(table.Name);
             }
 
             return new NewSessionResultChats { sessionId = guid, chats = output };
@@ -474,22 +474,62 @@ namespace Server
             }
         }
 
-        public Task<ResultSignIn> GetResultLoginAsync(string login, string password)
+        public async Task<ResultSignIn> GetResultLoginAsync(string login, string password)
         {
 
             //check login and pass -> return null or userID
+            try
+            {
+                string partitionKey = password;
+                string rowKey = login;
+                var table = tableClient.GetTableReference("users");
+                TableOperation retrieve = TableOperation.Retrieve<UserTable>(partitionKey, rowKey);
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                if (result.Result != null) {
+
+                    string userId = Guid.NewGuid().ToString();
+
+                    ResultSignIn output = new ResultSignIn();
+                    output.userID = userId;
 
 
-            return null;
+                    CloudTable cloudTable = tableClient.GetTableReference("users");
+                    //await CreateNewTableAsync(cloudTable);
+
+                    ActiveUserTable userTable = new ActiveUserTable();
+                    userTable.Login = login;
+                    userTable.UserID = userId;
+
+                    userTable.AssignPartitionKey();
+                    userTable.AssignRowKey();
+
+
+                    TableOperation tableOperation = TableOperation.Insert(userTable);
+                    await cloudTable.ExecuteAsync(tableOperation);
+
+
+                    return output;
+                }
+                else return null;
+
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            
         }
 
         //GET USERS TABLE
-        public List<UserTable> GetUserTableTest()
+        public List<UserTable> GetUserTableTest(string tableName)
         {
             var entities = new List<UserTable>();
             try
             {
-                var table = tableClient.GetTableReference("users");
+                var table = tableClient.GetTableReference(tableName);
                 TableContinuationToken token = null;
                 var queryResult = table.ExecuteQuerySegmentedAsync(new TableQuery<UserTable>(), token);
 

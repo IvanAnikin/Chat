@@ -125,9 +125,9 @@ namespace Server.Controllers
         }
 
         [HttpGet("getUserTableTest")]
-        public List<UserTable> GetUserTableTest()
+        public List<UserTable> GetUserTableTest(string tableName)
         {
-            return _chatManager.GetUserTableTest();
+            return _chatManager.GetUserTableTest(tableName);
         }
     }
 }

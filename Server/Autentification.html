@@ -106,11 +106,11 @@
                     };
 
                     var result = JSON.parse(xhttp.responseText);
-                    if (result == true || result == "true") {
-                        alert("Log in SUCCESSFUL");
+                    if (result == null || result == "") {
+                        alert("Log in UNCCESSFUL");
                     }
                     else {
-                        alert("Log in UNSUCCESSFUL");
+                        alert(result.userID);
                     }
                 }
             };
