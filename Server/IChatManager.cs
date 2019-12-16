@@ -12,6 +12,10 @@ namespace Server
         public List<Message> lastMessages;
         public string sas;
     }
+    public class ResultSignIn
+    {
+        public string userID;
+    }
     public class NewSessionResultChats
     {
         public string sessionId;
@@ -301,5 +305,6 @@ namespace Server
         Task<string> DBStoreUser(string login, string hash, string nickname, string level);
         Task<string> DeleteAllUsersTestAsync();
         Task<bool> CheckCredentialsAsync(string login, string hash);
+        Task<ResultSignIn> GetResultLoginAsync(string login, string password);
     }    
 }

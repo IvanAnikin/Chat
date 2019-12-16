@@ -474,6 +474,15 @@ namespace Server
             }
         }
 
+        public Task<ResultSignIn> GetResultLoginAsync(string login, string password)
+        {
+
+            //check login and pass -> return null or userID
+
+
+            return null;
+        }
+
         //GET USERS TABLE
         public List<UserTable> GetUserTableTest()
         {

@@ -55,6 +55,9 @@ namespace Server.Controllers
             };
         }
 
+        [HttpGet("SignIn")]
+        public async Task<ResultSignIn> OnLoadAsync(string login, string password) => await _chatManager.GetResultLoginAsync(login, password);
+
         [HttpGet("NewUser")]
         public Task<string> NewUser(string login, string hash)
         {
