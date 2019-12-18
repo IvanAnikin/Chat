@@ -111,10 +111,16 @@
                     }
                     else {
                         alert(result.userID);
+
+                        var url = "/api/Default/WithId";
+                        var params = "?userId=" + result.userID + "&login=" + login;
+
+                        window.location.href = url + params;
+
                     }
                 }
             };
-            xhttp.open("GET", "Autentification/CheckCredentials" + "?login=" + login + "&hash=" + password);
+            xhttp.open("GET", "Autentification/SignIn" + "?login=" + login + "&password=" + password);
             xhttp.send();
         }
     </script>

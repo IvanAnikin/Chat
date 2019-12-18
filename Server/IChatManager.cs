@@ -222,6 +222,7 @@ namespace Server
         Task<string> DBStoreUser(string login, string hash, string nickname, string level);
         Task<string> DeleteAllUsersTestAsync();
         Task<bool> CheckCredentialsAsync(string login, string hash);
+        Task<bool> CheckActiveUserIDsAsync(string activeUserID, string login);
         Task<ResultSignIn> GetResultLoginAsync(string login, string password);
     }    
 }

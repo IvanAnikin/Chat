@@ -495,7 +495,7 @@ namespace Server
                     output.userID = userId;
 
 
-                    CloudTable cloudTable = tableClient.GetTableReference("users");
+                    CloudTable cloudTable = tableClient.GetTableReference("activeUsers");
                     //await CreateNewTableAsync(cloudTable);
 
                     ActiveUserTable userTable = new ActiveUserTable();
@@ -521,6 +521,33 @@ namespace Server
                 return null;
             }
             
+        }
+
+        public async Task<bool> CheckActiveUserIDsAsync(string activeUserID, string login)
+        {
+            try
+            {
+                string partitionKey = activeUserID;
+                string rowKey = login;
+                var table = tableClient.GetTableReference("activeUsers");
+                TableOperation retrieve = TableOperation.Retrieve<ActiveUserTable>(partitionKey, rowKey);
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                if (result.Result != null)
+                {
+
+
+                    return true;
+                }
+                else return false;
+
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         //GET USERS TABLE

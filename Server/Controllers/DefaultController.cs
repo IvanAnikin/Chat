@@ -37,6 +37,34 @@ namespace Server.Controllers
                 Content = text
             };
         }
+        [HttpGet("WithId")]
+        public async Task<ContentResult> GetWithIDAsync(string userId, string login)
+        {
+
+            
+            if(await _chatManager.CheckActiveUserIDsAsync(userId, login))
+            {
+                string text;
+                var fileStream = new FileStream(@"DefaultPage.html", FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    text = streamReader.ReadToEnd();
+                }
+
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = text
+                };
+            }
+            else
+            {
+                return null;
+            }
+
+            
+        }
 
         [HttpGet("OnLoad")]
         public async Task<NewSessionResultChats> OnLoadAsync() => await _chatManager.GetChatsSessionAsync(10);
