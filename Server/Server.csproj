@@ -43,6 +43,9 @@
     <None Update="photoTake.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="usersSettings.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="uploadPhoto.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

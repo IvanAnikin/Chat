@@ -65,6 +65,23 @@ namespace Server.Controllers
 
             
         }
+        [HttpGet("userSettings")]
+        public ContentResult UsersSettings(string userId, string login)
+        {
+            string text;
+            var fileStream = new FileStream(@"usersSettings.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
 
         [HttpGet("OnLoad")]
         public async Task<NewSessionResultChats> OnLoadAsync() => await _chatManager.GetChatsSessionAsync(10);
