@@ -83,6 +83,26 @@ namespace Server.Controllers
             };
         }
 
+        [HttpPut("changeUserPicture")]
+        public async void changeUserPicture(string userId, string login, string hash, string pictureName)
+        {
+            if (await _chatManager.CheckActiveUserIDsAsync(userId, login))
+            {
+                await _chatManager.ChangeUserPicture(login, hash, pictureName);
+            }
+        }
+
+        [HttpGet("changeUserPictureGet")]
+        public async Task<string> changeUserPictureGet(string userId, string login, string hash, string pictureName)
+        {
+            if (await _chatManager.CheckActiveUserIDsAsync(userId, login))
+            {
+                return await _chatManager.ChangeUserPicture(login, hash, pictureName);
+                //return "DONE";
+            }
+            else return "error";
+        }
+
         [HttpGet("OnLoad")]
         public async Task<NewSessionResultChats> OnLoadAsync() => await _chatManager.GetChatsSessionAsync(10);
 

@@ -93,6 +93,7 @@ namespace Server
         private string hash;
         private string nickname;
         private string level;
+        private string photo;
 
         public string Login
         {
@@ -132,6 +133,19 @@ namespace Server
                 nickname = value;
             }
         }
+
+        public string Photo
+        {
+            get
+            {
+                return photo;
+            }
+            set
+            {
+                level = photo;
+            }
+        }
+
         public string Level
         {
             get
@@ -224,5 +238,6 @@ namespace Server
         Task<bool> CheckCredentialsAsync(string login, string hash);
         Task<bool> CheckActiveUserIDsAsync(string activeUserID, string login);
         Task<ResultSignIn> GetResultLoginAsync(string login, string password);
+        Task<string> ChangeUserPicture(string login, string hash, string pictureName);
     }    
 }

@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Server
 {
@@ -444,6 +445,7 @@ namespace Server
             userTable.Hash = hash;
             userTable.Nickname = nickname;
             userTable.Level = level;
+            userTable.Photo = "";
 
             userTable.AssignPartitionKey();
             userTable.AssignRowKey();
@@ -548,6 +550,43 @@ namespace Server
             {
                 return false;
             }
+        }
+
+        public async Task<string> ChangeUserPicture(string login, string hash, string pictureName)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+
+                string partitionKey = hash;
+                string rowKey = login;
+
+                TableOperation retrieve = TableOperation.Retrieve<UserTable>(partitionKey, rowKey);
+
+                Trace.TraceInformation($"getting data for {partitionKey}:{rowKey}");
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                Trace.TraceInformation($"result:  {result?.Result?.GetType()?.ToString()}");
+
+                UserTable thanks = (UserTable)result.Result;
+
+                thanks.ETag = "*";
+                thanks.Photo = pictureName;
+
+                if (result != null)
+                {
+                    TableOperation update = TableOperation.Replace(thanks);
+
+                    await table.ExecuteAsync(update);
+                }
+                return "DONE";
+            }
+            catch(Exception e)
+            {
+                return e.ToString() + " || " + login + " || " + hash;
+            }
+            
         }
 
         //GET USERS TABLE
