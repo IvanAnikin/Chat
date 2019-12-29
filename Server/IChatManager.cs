@@ -142,7 +142,7 @@ namespace Server
             }
             set
             {
-                level = photo;
+                photo = value;
             }
         }
 
@@ -239,5 +239,8 @@ namespace Server
         Task<bool> CheckActiveUserIDsAsync(string activeUserID, string login);
         Task<ResultSignIn> GetResultLoginAsync(string login, string password);
         Task<string> ChangeUserPicture(string login, string hash, string pictureName);
+        Task<string> ChangeUserPictureTest(string login, string hash, string pictureName);
+        Task<UserTable> GetUserByLogin(string login);
+        Task<string> ChangeUserPictureNew(string login, string pictureName);
     }    
 }

@@ -588,6 +588,117 @@ namespace Server
             }
             
         }
+        public async Task<string> ChangeUserPictureNew(string login, string pictureName)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+
+                
+                string rowKey = login;
+
+                UserTable thanks = await GetUserByLogin(login);
+
+                thanks.ETag = "*";
+                thanks.Photo = pictureName;
+
+                if (thanks != null)
+                {
+                    TableOperation update = TableOperation.Replace(thanks);
+
+                    await table.ExecuteAsync(update);
+                }
+                return "DONE";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+        }
+
+        public async Task<UserTable> GetUserByLogin(string login)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+
+                string rowKey = login;
+
+                TableQuery<UserTable> rangeQuery = new TableQuery<UserTable>().Where(
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey));
+
+                TableContinuationToken token = null;
+                foreach (UserTable entity in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    return entity;
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                //return e.ToString();
+                return null;
+            }
+
+        }
+
+        public async Task<string> ChangeUserPictureTest(string login, string hash, string pictureName)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+
+                string partitionKey = hash;
+                string rowKey = login;
+
+                
+                TableOperation retrieve = TableOperation.Retrieve<UserTable>(partitionKey, rowKey);
+
+                //Trace.TraceInformation($"getting data for {partitionKey}:{rowKey}");
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                UserTable oldUser = (UserTable)result.Result;
+
+                //return oldUser.Login.ToString();
+
+                TableBatchOperation batchDeleteOperation = new TableBatchOperation();
+
+
+
+                batchDeleteOperation.Delete((UserTable)result.Result);
+
+                // Execute the batch operation.
+                await table.ExecuteBatchAsync(batchDeleteOperation);
+
+                
+                UserTable userTable = new UserTable();
+                userTable.Login = login;
+                userTable.Hash = hash;
+                userTable.Nickname = oldUser.Nickname;
+                userTable.Level = oldUser.Level;
+                userTable.Photo = pictureName;
+
+                userTable.AssignPartitionKey();
+                userTable.AssignRowKey();
+
+
+                TableOperation tableOperation = TableOperation.Insert(userTable);
+                await table.ExecuteAsync(tableOperation);
+
+                
+
+                return "DONE";
+            }
+            catch (Exception e)
+            {
+                return e.ToString() + " || " + login + " || " + hash;
+            }
+
+        }
+
+
 
         //GET USERS TABLE
         public List<UserTable> GetUserTableTest(string tableName)

@@ -80,7 +80,7 @@ namespace Server.Controllers
         [HttpPost("NewUserPost")]
         public void NewUserPost(string login, string hash, string nickname)
         {
-            if (nickname == "") nickname = "Anonymous";
+            if (nickname == "" || nickname == null) nickname = "Anonymous";
 
             string level = "administrator";
             //string level = "spectator";
