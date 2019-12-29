@@ -8,6 +8,9 @@
         var chatsOnPage = ["Available chats will be displayed here.."];
         var sessionId = "";
 
+        var  userId = "";
+        var  login = "";
+
         function OnLoad() {
             var xhttp = new XMLHttpRequest();
 
@@ -33,6 +36,13 @@
             };
             xhttp.open("GET", "/api/Default/OnLoad", true);
             xhttp.send();
+
+
+            const url = window.location;
+            const urlObject = new URL(url);
+            userId = urlObject.searchParams.get('userId');
+            login = urlObject.searchParams.get('login');
+
         }
 
         function GetNewChat() {
@@ -123,6 +133,13 @@
         function loadPhotoUploadPage() {
             BBCremove();
             var url = "/api/Video/upload";
+
+            window.location.href = url;
+        }
+
+        function loadUserSettingsPage() {
+            BBCremove();
+            var url = "/api/Default/userSettings?userId=" + userId + "&login=" + login;
 
             window.location.href = url;
         }
@@ -239,6 +256,11 @@
             <button onclick="loadPhotoTakePage()" id="myButtonStart">Video</button>
             <p id="myParagraph3">Want to upload a photo from your PC to cloud? Click under the text.</p>
             <button onclick="loadPhotoUploadPage()" id="myButtonStart">Video</button>
+            <br />
+            <br />
+            <br />
+            <p id="myParagraph3">USER ACCOUNT SETINGS</p>
+            <button onclick="loadUserSettingsPage()" id="myButtonStart">Settings</button>
         </div>
 
 

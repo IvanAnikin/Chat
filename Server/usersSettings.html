@@ -69,6 +69,10 @@
                     hash = jsonData.hash;
                     photo = jsonData.photo;
 
+                    if (photo != null && photo != "") {
+                        document.getElementById("userPicture").src = "https://notesaccount.blob.core.windows.net/users-photos/" + photo + sas;
+                    }
+
                     document.getElementById("nickname").textContent = nickname;
                     document.getElementById("photo").textContent = photo;
 
@@ -111,6 +115,8 @@
                             };
                             xhttpUpload.open("GET", "/api/Default/changeUserPictureGet?userId=" + userId + "&login=" + login + "&pictureName=" + guid);
                             xhttpUpload.send();
+
+                            document.getElementById("userPicture").src = "https://notesaccount.blob.core.windows.net/users-photos/" + photo + sas;
                         }
                     });
 
@@ -239,6 +245,13 @@
 
         <h4>Photo:</h4>
         <h4 id="photo"></h4>
+
+        <div class="gallery">
+            <a target="_blank">
+                <img src="" alt="Profile picture" width="600" height="400" id="userPicture">
+            </a>
+        </div>
+
         <input type="file" id="fileinput" />
         <button id="upload-button">Upload</button>
 
