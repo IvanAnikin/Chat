@@ -617,6 +617,35 @@ namespace Server
 
         }
 
+        public async Task<string> ChangeUserNickname(string login, string nickname)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("users");
+
+
+                string rowKey = login;
+
+                UserTable thanks = await GetUserByLogin(login);
+
+                thanks.ETag = "*";
+                thanks.Nickname = nickname;
+
+                if (thanks != null)
+                {
+                    TableOperation update = TableOperation.Replace(thanks);
+
+                    await table.ExecuteAsync(update);
+                }
+                return "DONE";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+        }
+
         public async Task<UserTable> GetUserByLogin(string login)
         {
             try

@@ -110,7 +110,7 @@
                             var xhttpUpload = new XMLHttpRequest();
                             xhttpUpload.onreadystatechange = function () {
                                 if (this.readyState == 4 && this.status == 200) {
-
+                                    reloadPage();
                                 }
                             };
                             xhttpUpload.open("GET", "/api/Default/changeUserPictureGet?userId=" + userId + "&login=" + login + "&pictureName=" + guid);
@@ -119,14 +119,32 @@
                             document.getElementById("userPicture").src = "https://notesaccount.blob.core.windows.net/users-photos/" + photo + sas;
                         }
                     });
+            });
 
-                //controller - send guid
+            document.getElementById('nickname-button').addEventListener('click', () => {
 
-                
-                
+                var newNick = document.getElementById("nicknameInput").value;
 
+                if (newNick != null && newNick != "") {
+                    var xhttpNick = new XMLHttpRequest();
+                    xhttpNick.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            reloadPage();
+                        }
+                    };
+                    xhttpNick.open("GET", "/api/Default/changeUserNicknameGet?userId=" + userId + "&login=" + login + "&nickname=" + newNick);
+                    xhttpNick.send();
+                }
+                else alert("Enter nickname");
 
             });
+
+            function reloadPage() {
+                var url = "/api/Default/UserSettings";
+                var params = "?userId=" + userId + "&login=" + login;
+
+                window.location.href = url + params;
+            }
         }
 
     </script>
@@ -239,12 +257,18 @@
 
         <div class="header">
             <h1 id="header">User Settins</h1>
-            <h4>Nickname:</h4>
-            <h4 id="nickname"></h4>
+            
         </div>
 
-        <h4>Photo:</h4>
-        <h4 id="photo"></h4>
+        <h5>Nickname:</h5>
+        <h6 id="nickname"></h6>
+
+        <input id="nicknameInput" type="text" name="text">
+        <button id="nickname-button">Change nick</button>
+
+        <br/>
+        <h5>Photo:</h5>
+        <h6 id="photo"></h6>
 
         <div class="gallery">
             <a target="_blank">

@@ -100,7 +100,10 @@
             BBCremove();
 
             var url = "/api/Chat/";
-            var params = "?chatName=" + document.getElementById("chatInput").value + "&nickname=" + document.getElementById("nicknameInput").value;
+            var paramsNick = "";
+            if (login == null || login == "") paramsNick = document.getElementById("nicknameInput").value
+            else paramsNick = login;
+            var params = "?chatName=" + document.getElementById("chatInput").value + "&nickname=" + paramsNick;
 
             window.location.href = url + params;
         }

@@ -84,20 +84,36 @@
     </style>
 
     <script>
+
+
+
         function OnLoad() {
-            
+
         }
         function SignUp() {
+
+
+
             //document.getElementById("username").value
             if (true) {
                 var http = new XMLHttpRequest();
                 var url = '/api/Autentification/NewUserPost';
-                var params = "?login=" + document.getElementById("username").value + "&hash=" + document.getElementById("password").value;
+                var password = document.getElementById("password").value;
+
+
+                var hashObj = new jsSHA("SHA-512", "TEXT", { numRounds: 5 });
+                hashObj.update(password);
+                var hash = hashObj.getHash("HEX");
+
+                console.log(hash);
+
+
+                var params = "?login=" + document.getElementById("username").value + "&hash=" + hash;
                 http.open('POST', url + params, true);
 
                 http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-                
+
 
                 http.send(params);
             }
@@ -108,18 +124,18 @@
             }
         }
         function SetCookies() {
-            
+
             var login = document.getElementById("username").value;
             var password = document.getElementById("password").value;
-        
+
             Cookies.set('login', login, { expires: 7 });
-            Cookies.set('password', password, { expires: 7 }); 
+            Cookies.set('password', password, { expires: 7 });
 
             document.getElementById("username").value = '';
             document.getElementById("password").value = '';
-            
+
         }
-        function checkCredentials(login , password) {
+        function checkCredentials(login, password) {
 
             var xhttp = new XMLHttpRequest();
 
@@ -145,10 +161,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+
 
 </head>
 
-<body onload="OnLoad()">
+<body>
 
     
         <div class="imgcontainer">

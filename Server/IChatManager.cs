@@ -242,5 +242,6 @@ namespace Server
         Task<string> ChangeUserPictureTest(string login, string hash, string pictureName);
         Task<UserTable> GetUserByLogin(string login);
         Task<string> ChangeUserPictureNew(string login, string pictureName);
+        Task<string> ChangeUserNickname(string login, string nickname);
     }    
 }

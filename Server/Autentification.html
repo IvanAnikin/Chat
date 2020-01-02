@@ -87,15 +87,26 @@
         function OnLoad() {
             login = Cookies.get('login');
             password = Cookies.get('password');
+
+            var hashObj = new jsSHA("SHA-512", "TEXT", { numRounds: 5 });
+            hashObj.update(password);
+            var hash = hashObj.getHash("HEX");
+
             if (login != "" && login != null && password != "" && password != null) {
-                alert("now need to check login: " + login + " and password: " + password);
-                checkCredentials(login, password);
+                //alert("now need to check login: " + login + " and password: " + password);
+                checkCredentials(login, hash);
             }
         }
         function LogIn() {
-            checkCredentials(document.getElementById("username").value, document.getElementById("password").value);
+            var password = document.getElementById("password").value;
+
+            var hashObj = new jsSHA("SHA-512", "TEXT", { numRounds: 5 });
+            hashObj.update(password);
+            var hash = hashObj.getHash("HEX");
+
+            checkCredentials(document.getElementById("username").value, hash);
         }
-        function checkCredentials(login , password) {
+        function checkCredentials(login, password) {
 
             var xhttp = new XMLHttpRequest();
 
@@ -107,10 +118,10 @@
 
                     var result = JSON.parse(xhttp.responseText);
                     if (result == null || result == "") {
-                        alert("Log in UNCCESSFUL");
+                        //alert("Log in UNCCESSFUL");
                     }
                     else {
-                        alert(result.userID);
+                        //alert(result.userID);
 
                         var url = "/api/Default/WithId";
                         var params = "?userId=" + result.userID + "&login=" + login;
@@ -126,6 +137,8 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
 
 
 </head>

@@ -102,6 +102,16 @@ namespace Server.Controllers
             }
             else return "error";
         }
+        [HttpGet("changeUserNicknameGet")]
+        public async Task<string> changeUserNicknameGet(string userId, string login, string nickname)
+        {
+            if (await _chatManager.CheckActiveUserIDsAsync(userId, login))
+            {
+                return await _chatManager.ChangeUserNickname(login, nickname);
+                //return "DONE";
+            }
+            else return "error";
+        }
         [HttpGet("GetUserByLogin")]
         public Task<UserTable> GetUserByLogin(string login) => _chatManager.GetUserByLogin(login);
 
