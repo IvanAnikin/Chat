@@ -671,7 +671,6 @@ namespace Server
             }
 
         }
-
         public async Task<UserTable> GetUserByLogin(string login)
         {
             try

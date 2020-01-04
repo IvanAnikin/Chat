@@ -86,11 +86,16 @@
                         }
                     });
 
+                    document.getElementById("chatPicture").src = "https://notesaccount.blob.core.windows.net/chats-photos/" + chatName + sas;
+
                     getLastMessage();
                 }
             };
             xhttp.open("GET", "/api/Chat/LoadChat" + "?chatName=" + chatName, true);
             xhttp.send();
+
+
+            
 
             
         }
@@ -185,6 +190,14 @@
 
             var url = "/api/Default/";
             var params = "";
+
+            window.location.href = url + params;
+        }
+        function loadSettings() {
+            BBremove();
+
+            var url = "/api/Default/ChatSettings";
+            var params = "?chatName=" + chatName;
 
             window.location.href = url + params;
         }
@@ -327,7 +340,15 @@
                 <li><button id="SendButton" onclick=sendMessage()>Send message</button><br><br></li>
                 <li><button id="RefreshButton" onclick=refreshPage()>Refresh</button></li>
                 <li><button id="HomeButton" onclick=loadDefault()>Home</button></li>
+                <li><button id="SettingsButton" onclick=loadSettings()>Chat Settings</button></li>
             </ul>
+
+            <div class="gallery">
+                <a target="_blank">
+                    <img src="" alt="Chat's logo" width="600" height="400" id="chatPicture">
+                </a>
+            </div>
+
         </div>
 
         <div class="col-2">
