@@ -44,7 +44,31 @@ namespace Server
                 throw new ArgumentNullException("wrong connection string");
             }
 
+            
         }
+
+
+        public async Task activeUsersCleaner()
+        {
+                CloudTable cloudTable = tableClient.GetTableReference("activeUsers");
+
+                TableContinuationToken token = null;
+                var queryResult = cloudTable.ExecuteQuerySegmentedAsync(new TableQuery<ActiveUserTable>(), token);
+                var entities = new List<ActiveUserTable>();
+                entities.AddRange(queryResult.Result);
+
+                foreach(var entity in entities)
+                {
+                    DateTime timeNow = DateTime.Now;
+                    if (timeNow.Subtract(entity.TimeStart).TotalMinutes > 100)
+                    {
+                        TableOperation delete = TableOperation.Delete(entity);
+
+                        await cloudTable.ExecuteAsync(delete);
+                    }
+                }
+        }
+
 
         public async Task StoreMessageAsync(string chatName, Message message, string guid) //DOING WITH DB
         {
@@ -503,6 +527,7 @@ namespace Server
                     ActiveUserTable userTable = new ActiveUserTable();
                     userTable.Login = login;
                     userTable.UserID = userId;
+                    userTable.TimeStart = DateTime.Now;
 
                     userTable.AssignPartitionKey();
                     userTable.AssignRowKey();
@@ -511,6 +536,7 @@ namespace Server
                     TableOperation tableOperation = TableOperation.Insert(userTable);
                     await cloudTable.ExecuteAsync(tableOperation);
 
+                    await activeUsersCleaner();
 
                     return output;
                 }

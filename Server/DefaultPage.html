@@ -9,9 +9,23 @@
         var sessionId = "";
 
         var  userId = "";
-        var  login = "";
+        var login = "";
+
+        var nickname = "";
+        var hash = "";
+        var photo = "";
+
+        var sas = "";
 
         function OnLoad() {
+
+
+            const url = window.location;
+            const urlObject = new URL(url);
+            userId = urlObject.searchParams.get('userId');
+            login = urlObject.searchParams.get('login');
+
+
             var xhttp = new XMLHttpRequest();
 
             document.getElementById("chatsWindow").innerHTML = chatsOnPage.join(" </br>");
@@ -37,11 +51,39 @@
             xhttp.open("GET", "/api/Default/OnLoad", true);
             xhttp.send();
 
+            var xhttpSas = new XMLHttpRequest();
+            xhttpSas.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
 
-            const url = window.location;
-            const urlObject = new URL(url);
-            userId = urlObject.searchParams.get('userId');
-            login = urlObject.searchParams.get('login');
+                    //var jsonData = JSON.parse(xhttp.responseText);
+
+                    //sas = jsonData.toString();
+                    sas = xhttpSas.responseText;
+                    document.getElementById("sasTextArea").textContent = sas;
+
+                }
+            };
+            xhttpSas.open("GET", "/api/Chat/GetSasTest");
+            xhttpSas.send();
+
+            var xhttpInfo = new XMLHttpRequest();
+            xhttpInfo.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var jsonData = JSON.parse(xhttpInfo.responseText);
+
+                    nickname = jsonData.nickname;
+                    hash = jsonData.hash;
+                    photo = jsonData.photo;
+
+                    if (photo != null && photo != "") {
+                        document.getElementById("userPicture").src = "https://notesaccount.blob.core.windows.net/users-photos/" + photo + sas;
+                    }
+
+                }
+            };
+            xhttpInfo.open("GET", "/api/Default/GetUserByLogin?login=" + login);
+            xhttpInfo.send();
 
         }
 
@@ -101,8 +143,8 @@
 
             var url = "/api/Chat/";
             var paramsNick = "";
-            if (login == null || login == "") paramsNick = document.getElementById("nicknameInput").value
-            else paramsNick = login;
+            if (nickname == null || nickname == "") paramsNick = document.getElementById("nicknameInput").value
+            else paramsNick = nickname;
             var params = "?chatName=" + document.getElementById("chatInput").value + "&nickname=" + paramsNick;
 
             window.location.href = url + params;
@@ -227,6 +269,21 @@
             width: 400px;
             height: 200px;
         }
+        div.gallery {
+            margin: 5px;
+            border: 1px solid #ccc;
+            float: left;
+            width: 180px;
+        }
+
+            div.gallery:hover {
+                border: 1px solid #777;
+            }
+
+            div.gallery img {
+                width: 100%;
+                height: auto;
+            }
     </style>
 
     <title>Chat Server</title>
@@ -250,6 +307,12 @@
                 <li><button id="newChatButton" onclick=createNewChat()>New chat</button></li>
                 <li><button id="deleteChatButton" onclick=deleteChat()>Delete chat</button></li>
             </ul>
+
+            <div class="gallery">
+                <a target="_blank">
+                    <img src="" alt="Profile picture" width="600" height="400" id="userPicture">
+                </a>
+            </div>
         </div>
 
         <div class="col-2">
@@ -270,6 +333,7 @@
         <div class="col-3 menu">
             <ul>
                 <li><button id="deleteChatsButton" onclick=DeleteChats()>Clear chats</button></li>
+                <textarea style="visibility:hidden;" id="sasTextArea"></textarea>
             </ul>
         </div>
     </div>

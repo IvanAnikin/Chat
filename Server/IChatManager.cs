@@ -173,6 +173,21 @@ namespace Server
     {
         private string login;
         private string userID;
+        private DateTime timeStart;
+
+
+        public DateTime TimeStart
+        {
+            get
+            {
+                return timeStart;
+            }
+
+            set
+            {
+                timeStart = value;
+            }
+        }
 
         public string Login
         {
