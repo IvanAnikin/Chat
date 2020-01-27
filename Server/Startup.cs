@@ -27,7 +27,7 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSingleton<IChatManager>(new ChatManager(Configuration.GetConnectionString("connString"), Configuration.GetValue<string>("notessas")));
+            services.AddSingleton<IChatManager>(new ChatManager(Configuration.GetConnectionString("connString"), Configuration.GetValue<string>("notessas") , Configuration.GetValue<string>("comVisStorageKey")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

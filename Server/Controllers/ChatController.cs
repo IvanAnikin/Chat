@@ -75,5 +75,10 @@ namespace Server.Controllers
         {
             return _chatManager.GetSasTest();
         }
+        [HttpGet("GetVisKeyTest")]
+        public string GetVisKeyTest()
+        {
+            return _chatManager.GetVisKeyTest();
+        }
     }
 }

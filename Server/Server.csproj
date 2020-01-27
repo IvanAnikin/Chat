@@ -7,10 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\models2\**" />
+    <Compile Remove="wwwroot\models\**" />
+    <Content Remove="wwwroot\models2\**" />
+    <Content Remove="wwwroot\models\**" />
+    <EmbeddedResource Remove="wwwroot\models2\**" />
+    <EmbeddedResource Remove="wwwroot\models\**" />
+    <None Remove="wwwroot\models2\**" />
+    <None Remove="wwwroot\models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="11.1.1" />
+    <PackageReference Include="Microsoft.ML" Version="1.4.0" />
+    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.4.0" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="1.4.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils" Version="3.1.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
@@ -34,6 +48,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="MLimage.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="SignUp.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -44,6 +61,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="chatSettings.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="mlComVis.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="usersSettings.html">
@@ -78,8 +98,6 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="wwwroot\labeled_images\" />
-    <Folder Include="wwwroot\models\" />
-    <Folder Include="wwwroot\models2\" />
   </ItemGroup>
 
   <ItemGroup>

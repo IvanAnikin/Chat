@@ -188,6 +188,12 @@
 
             window.location.href = url;
         }
+        function loadComVisPage() {
+            BBCremove();
+            var url = "/api/Default/ComputerVision";
+
+            window.location.href = url;
+        }
 
 
 
@@ -322,6 +328,8 @@
             <button onclick="loadPhotoTakePage()" id="myButtonStart">Video</button>
             <p id="myParagraph3">Want to upload a photo from your PC to cloud? Click under the text.</p>
             <button onclick="loadPhotoUploadPage()" id="myButtonStart">Video</button>
+            <p id="myParagraph3">ML COMPUTER VISION</p>
+            <button onclick="loadComVisPage()" id="myButtonStart">Computer Vision</button>
             <br />
             <br />
             <br />

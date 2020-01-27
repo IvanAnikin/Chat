@@ -24,15 +24,17 @@ namespace Server
 
         private readonly string connectionString;
         private readonly string sas;
+        private readonly string mlComVisStorageKey;
 
         private CloudStorageAccount storageAccount = null;
         CloudTableClient tableClient = null;
         CloudBlobClient blobClient = null;
 
-        public ChatManager(string connectionString, string inputsas)
+        public ChatManager(string connectionString, string inputsas, string inputmlComVisStorageKey)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException("ConnectionString is null");
             this.sas = inputsas ?? throw new ArgumentNullException("Sas is null");
+            this.mlComVisStorageKey = inputmlComVisStorageKey ?? throw new ArgumentNullException("ComVisKey is null");
 
             if (CloudStorageAccount.TryParse(connectionString, out storageAccount))
             {
@@ -153,7 +155,12 @@ namespace Server
             return sas;
         }
 
-        
+        public string GetVisKeyTest()
+        {
+            return mlComVisStorageKey;
+        }
+
+
 
         public async Task<NewSessionResultChats> GetChatsSessionAsync(int count)
         {

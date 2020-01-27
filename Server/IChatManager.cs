@@ -245,6 +245,7 @@ namespace Server
         List<Message> DBGetChatsMessages(string chatName);
         Task<string> CreateNewBlobContainerTestAsync(string chatName);
         string GetSasTest();
+        string GetVisKeyTest();
         Message GetLastMessageTest(string chatName, int count);
         List<MessageTable> GetMessageTableTest(string chatName);
         List<UserTable> GetUserTableTest(string tableName);
