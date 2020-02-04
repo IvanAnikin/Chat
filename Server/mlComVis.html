@@ -1,0 +1,204 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <title>Photo upload</title>
+
+    <script src="/azure-storage.blob.min.js" charset="utf-8"></script>
+
+    <script>
+        function onLoad() {
+            const account = {
+                name: "notesaccount"
+            };
+            var sas = "";
+            var comVisStorageKey = "";
+            var blobName = "test.jpg";
+
+            const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+
+            var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+            var containerName = 'computer-vision';
+
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+
+            var img = document.getElementById("picture");   
+
+            //get SAS
+            var xhttpSas = new XMLHttpRequest();
+            xhttpSas.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    sas = xhttpSas.responseText;
+
+                    blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+	
+	                document.getElementById("picture").src = blockBlobUrl = "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas;
+
+                    img = document.getElementById("picture");
+		
+		            canvas.width = img.width;
+		            canvas.height = img.height;
+		
+                    ctx.drawImage(img, 0, 0);
+
+                    //get comVisKey
+                    var xhttpVis = new XMLHttpRequest();
+                    xhttpVis.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                            comVisStorageKey = xhttpVis.responseText;
+                        }
+                    };
+                    xhttpVis.open("GET", "/api/Chat/GetVisKeyTest");
+                    xhttpVis.send();
+	                
+
+                    
+
+                }
+            };
+            xhttpSas.open("GET", "/api/Chat/GetSasTest");
+            xhttpSas.send();
+
+
+
+            
+
+
+            document.getElementById('create-button').addEventListener('click', () => {
+
+                blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+                blobService.createContainerIfNotExists(containerName, (error, container) => {
+                    if (error) {
+
+                    } else {
+                        console.log(container.name);
+                    }
+                });
+
+            });
+
+            document.getElementById('upload-button').addEventListener('click', () => {
+
+                const file = document.getElementById('fileinput').files[0];
+
+                blobService.createBlockBlobFromBrowserFile(containerName,
+                    blobName,
+                    file,
+                    (error, result) => {
+                        if (error) {
+                            
+                        } else {
+                            console.log('Upload is successful');
+                        }
+                    });
+
+            });
+
+            document.getElementById('list-button').addEventListener('click', () => {
+
+                blobService.listBlobsSegmented(containerName, null, (error, results) => {
+                    if (error) {
+                        
+                    } else {
+                        results.entries.forEach(blob => {
+                            console.log(blob.name);
+                        });
+                    }
+                });
+
+            });
+
+            document.getElementById('delete-button').addEventListener('click', () => {
+
+                var blob = blobName;
+                blobService.deleteBlobIfExists(containerName, blob, (error, result) => {
+                    if (error) {
+                        
+                    } else {
+                        console.log('Blob deleted successfully');
+                    }
+                });
+
+            });
+
+            document.getElementById('analyze-button').addEventListener('click', () => {
+
+                var canvas = document.getElementById("myCanvas");
+                var ctx = canvas.getContext("2d");
+
+                var http = new XMLHttpRequest();
+		        var url = 'https://westus.api.cognitive.microsoft.com/vision/v2.0/analyze?visualFeatures=Categories,Objects&language=en';
+		                
+                http.open('POST', url, true);
+		
+		        http.setRequestHeader('Content-type', 'application/json');
+		        http.setRequestHeader('Ocp-Apim-Subscription-Key', comVisStorageKey);
+
+		        http.onreadystatechange = function() {
+			        if(http.readyState == 4 && http.status == 200) {
+				
+				        var response = JSON.parse(http.responseText);
+				
+				        var objects = response.objects;
+				
+				        ctx.font = "30px Arial";
+				        ctx.fillText(response.categories[0].name, 10, 30);
+				
+				        for (i in objects){
+				
+                            var rectangle = objects[i].rectangle;
+
+					        ctx.beginPath();
+					        ctx.rect(rectangle.x, rectangle.y, rectangle.w, rectangle.h);
+					        ctx.stroke();
+					
+					        ctx.font = "30px Arial";
+					        ctx.fillText(objects[i].object, rectangle.x, rectangle.y);
+				        }
+			        }
+		        }
+		        http.send(JSON.stringify({"url": "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas}));
+
+
+            });
+        }
+
+    </script>
+
+</head>
+
+<body onload="onLoad()">
+    <button id="create-button">Create Container</button>
+
+    <input type="file" id="fileinput" />
+    <button id="upload-button">Upload</button>
+
+    <button id="list-button">List</button>
+
+    <button id="delete-button">Delete</button>
+
+    <button id="analyze-button">Analyze</button>
+
+
+
+    <canvas id="myCanvas"
+            style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+
+    <img id="picture" style="display:none;">
+
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <title>Settings</title>
+
+    <script src="/azure-storage.blob.min.js" charset="utf-8"></script>
+
+    <script>
+        // Blob-related code goes here
+
+        //import * as azureStorageBlob from '';
+
+        var sas = "";
+        
+        
+
+        var nickname = "";
+        var hash = "";
+        var photo = "";
+
+
+        const url = window.location;
+        const urlObject = new URL(url);
+        const chatName = urlObject.searchParams.get('chatName');
+
+        
+
+        
+
+        function uuidstring() {
+            return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function onLoad() {
+            const account = {
+                name: "notesaccount"
+            };
+            //var sas = document.getElementById('sasInput').value;
+            document.getElementById("nickname").textContent = chatName;
+
+            var xhttpSas = new XMLHttpRequest();
+            xhttpSas.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    //var jsonData = JSON.parse(xhttp.responseText);
+
+                    //sas = jsonData.toString();
+                    sas = xhttpSas.responseText;
+
+                    document.getElementById("chatPicture").src = "https://notesaccount.blob.core.windows.net/chats-photos/" + chatName + sas;
+
+                }
+            };
+            xhttpSas.open("GET", "/api/Chat/GetSasTest");
+            xhttpSas.send();
+
+            const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+            var containerName = 'chats-photos';
+
+
+            document.getElementById('upload-button').addEventListener('click', () => {
+
+                var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
+
+                const file = document.getElementById('fileinput').files[0];
+
+                blobService.createBlockBlobFromBrowserFile(containerName,
+                    chatName,
+                    file,
+                    (error, result) => {
+                        if (error) {
+                            // Handle blob error
+                        } else {
+                            console.log('Upload is successful');
+
+
+                            document.getElementById("userPicture").src = "https://notesaccount.blob.core.windows.net/chats-photos/" + chatName + sas;
+                        }
+                    });
+            });
+
+            function reloadPage() {
+                var url = "/api/Default/ChatSettings";
+                var params = "?chatName=" + chatName;
+
+                window.location.href = url + params;
+            }
+        }
+
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        [class*="col-"] {
+            padding: 15px;
+        }
+
+        .col-1 {
+            float: left;
+            width: 15.0%;
+        }
+
+        .col-2 {
+            float: right;
+            width: 30.0%;
+            margin-right: 20px;
+        }
+
+        .col-3 {
+            width: 30%;
+            float: right;
+        }
+
+        .col-4 {
+            width: 33.33%;
+        }
+
+        .col-5 {
+            width: 41.66%;
+        }
+
+        html {
+            font-family: "Lucida Sans", sans-serif;
+        }
+
+        .header {
+            background-color: #9933cc;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        .menu ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            padding: 8px;
+            margin-bottom: 7px;
+            background-color: #33b5e5;
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+            .menu li:hover {
+                background-color: #0099cc;
+            }
+
+        .chatWindow {
+            width: 400px;
+            height: 500px;
+        }
+
+        .chatsWindow {
+            width: 400px;
+            height: 200px;
+        }
+
+
+        div.gallery {
+            margin: 5px;
+            border: 1px solid #ccc;
+            float: left;
+            width: 180px;
+        }
+
+            div.gallery:hover {
+                border: 1px solid #777;
+            }
+
+            div.gallery img {
+                width: 100%;
+                height: auto;
+            }
+
+        div.desc {
+            padding: 15px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+    
+
+    <body onload="onLoad()">
+
+        <div class="header">
+            <h1 id="header">Chat Settins</h1>
+            
+        </div>
+
+        <h5>Name:</h5>
+        <h6 id="nickname"></h6>
+
+        <br/>
+        <h5>Photo:</h5>
+        <h6 id="photo"></h6>
+
+        <div class="gallery">
+            <a target="_blank">
+                <img src="" alt="Profile picture" width="600" height="400" id="chatPicture">
+            </a>
+        </div>
+
+        <input type="file" id="fileinput" />
+        <button id="upload-button">Upload</button>
+
+        <textarea style="visibility:hidden;" id="sasTextArea"></textarea>
+
+    </body>
+
+</html>
