@@ -18,8 +18,14 @@
             };
             var sas = "";
             var comVisStorageKey = "";
-            var blobName = "test.jpg";
 
+            var cookies = Cookies.get('analyzePicture');
+
+            var blobName = "test.jpg";
+            if (cookies != "" && cookies != null) {
+                alert(cookies);
+                blobName = cookies;
+            }
             const blobUri = 'https://' + account.name + '.blob.core.windows.net';
 
             var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
@@ -29,7 +35,7 @@
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
 
-            var img = document.getElementById("picture");   
+            var img = document.getElementById("picture");
 
             //get SAS
             var xhttpSas = new XMLHttpRequest();
@@ -40,14 +46,14 @@
 
                     blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas);
 
-	
-	                document.getElementById("picture").src = blockBlobUrl = "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas;
+
+                    document.getElementById("picture").src = blockBlobUrl = "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas;
 
                     img = document.getElementById("picture");
-		
-		            canvas.width = img.width;
-		            canvas.height = img.height;
-		
+
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
                     ctx.drawImage(img, 0, 0);
 
                     //get comVisKey
@@ -60,9 +66,9 @@
                     };
                     xhttpVis.open("GET", "/api/Chat/GetVisKeyTest");
                     xhttpVis.send();
-	                
 
-                    
+
+
 
                 }
             };
@@ -71,7 +77,7 @@
 
 
 
-            
+
 
 
             document.getElementById('create-button').addEventListener('click', () => {
@@ -92,12 +98,18 @@
 
                 const file = document.getElementById('fileinput').files[0];
 
+                var input = document.getElementById("fileNameInp").value;
+                if (input != null && input != "") {
+                    blobName = input + ".jpg";
+                    Cookies.set('analyzePicture', blobName, { expires: 7 });
+                }
+
                 blobService.createBlockBlobFromBrowserFile(containerName,
                     blobName,
                     file,
                     (error, result) => {
                         if (error) {
-                            
+
                         } else {
                             console.log('Upload is successful');
                         }
@@ -109,7 +121,7 @@
 
                 blobService.listBlobsSegmented(containerName, null, (error, results) => {
                     if (error) {
-                        
+
                     } else {
                         results.entries.forEach(blob => {
                             console.log(blob.name);
@@ -124,7 +136,7 @@
                 var blob = blobName;
                 blobService.deleteBlobIfExists(containerName, blob, (error, result) => {
                     if (error) {
-                        
+
                     } else {
                         console.log('Blob deleted successfully');
                     }
@@ -138,37 +150,37 @@
                 var ctx = canvas.getContext("2d");
 
                 var http = new XMLHttpRequest();
-		        var url = 'https://westus.api.cognitive.microsoft.com/vision/v2.0/analyze?visualFeatures=Categories,Objects&language=en';
-		                
-                http.open('POST', url, true);
-		
-		        http.setRequestHeader('Content-type', 'application/json');
-		        http.setRequestHeader('Ocp-Apim-Subscription-Key', comVisStorageKey);
+                var url = 'https://westus.api.cognitive.microsoft.com/vision/v2.0/analyze?visualFeatures=Categories,Objects&language=en';
 
-		        http.onreadystatechange = function() {
-			        if(http.readyState == 4 && http.status == 200) {
-				
-				        var response = JSON.parse(http.responseText);
-				
-				        var objects = response.objects;
-				
-				        ctx.font = "30px Arial";
-				        ctx.fillText(response.categories[0].name, 10, 30);
-				
-				        for (i in objects){
-				
+                http.open('POST', url, true);
+
+                http.setRequestHeader('Content-type', 'application/json');
+                http.setRequestHeader('Ocp-Apim-Subscription-Key', comVisStorageKey);
+
+                http.onreadystatechange = function () {
+                    if (http.readyState == 4 && http.status == 200) {
+
+                        var response = JSON.parse(http.responseText);
+
+                        var objects = response.objects;
+
+                        ctx.font = "30px Arial";
+                        ctx.fillText(response.categories[0].name, 10, 30);
+
+                        for (i in objects) {
+
                             var rectangle = objects[i].rectangle;
 
-					        ctx.beginPath();
-					        ctx.rect(rectangle.x, rectangle.y, rectangle.w, rectangle.h);
-					        ctx.stroke();
-					
-					        ctx.font = "30px Arial";
-					        ctx.fillText(objects[i].object, rectangle.x, rectangle.y);
-				        }
-			        }
-		        }
-		        http.send(JSON.stringify({"url": "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas}));
+                            ctx.beginPath();
+                            ctx.rect(rectangle.x, rectangle.y, rectangle.w, rectangle.h);
+                            ctx.stroke();
+
+                            ctx.font = "30px Arial";
+                            ctx.fillText(objects[i].object, rectangle.x, rectangle.y);
+                        }
+                    }
+                }
+                http.send(JSON.stringify({ "url": "https://notesaccount.blob.core.windows.net/computer-vision/" + blobName + sas }));
 
 
             });
@@ -176,19 +188,30 @@
 
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+
 </head>
 
 <body onload="onLoad()">
-    <button id="create-button">Create Container</button>
+    <button id="create-button">Create Container</button><br>
 
-    <input type="file" id="fileinput" />
-    <button id="upload-button">Upload</button>
+
 
     <button id="list-button">List</button>
+    <button id="delete-button">Delete</button><br><br>
 
-    <button id="delete-button">Delete</button>
+    <input type="file" id="fileinput" />
+    <button id="upload-button">Upload</button><br>
 
-    <button id="analyze-button">Analyze</button>
+
+    <form>
+        Name:<br>
+        <input type="text" id="fileNameInp"><br>
+    </form>
+
+    <button id="analyze-button">Analyze</button><br><br><br>
 
 
 
