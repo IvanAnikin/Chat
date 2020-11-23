@@ -48,6 +48,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="RaspPage.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="MLimage.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

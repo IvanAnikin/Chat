@@ -80,5 +80,10 @@ namespace Server.Controllers
         {
             return _chatManager.GetVisKeyTest();
         }
+        [HttpGet("Bool")]
+        public bool GetBool()
+        {
+            return true;
+        }
     }
 }

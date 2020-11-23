@@ -6,6 +6,14 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Server
 {
+    public class TestJsonJob
+    {
+        public string sessionId;
+        public List<Message> lastMessages;
+        public string sas;
+    }
+
+
     public class NewSessionResult
     {
         public string sessionId;

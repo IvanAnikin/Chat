@@ -167,5 +167,7 @@ namespace Server.Controllers
 
         [HttpPost("BBCremove")] //remove bufferBlockChats /when leaving default page
         public void BBCremove(string sessionId) => _chatManager.BBCremove(sessionId);
+
+
     }
 }
