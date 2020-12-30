@@ -117,6 +117,40 @@ namespace Server.Controllers
                 Content = text
             };
         }
+        [HttpGet("MyProjects")]
+        public ContentResult MyProjects()
+        {
+            string text;
+            var fileStream = new FileStream(@"MyProjects.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+        [HttpGet("ReinforcementLearning")]
+        public ContentResult ReinforcementLearning()
+        {
+            string text;
+            var fileStream = new FileStream(@"ReinforcementLearning.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
 
         [HttpPut("changeUserPicture")]
         public async void changeUserPicture(string userId, string login, string hash, string pictureName)

@@ -194,6 +194,12 @@
 
             window.location.href = url;
         }
+        function loadProjectsPage() {
+            BBCremove();
+            var url = "/api/Default/MyProjects";
+
+            window.location.href = url;
+        }
 
 
 
@@ -330,6 +336,11 @@
             <button onclick="loadPhotoUploadPage()" id="myButtonStart">Video</button>
             <p id="myParagraph3">ML COMPUTER VISION</p>
             <button onclick="loadComVisPage()" id="myButtonStart">Computer Vision</button>
+            <br />
+            <br />
+            <br />
+            <p id="myParagraph3">My Projects</p>
+            <button onclick="loadProjectsPage()" id="myButtonStart">PROJECTS</button>
             <br />
             <br />
             <br />

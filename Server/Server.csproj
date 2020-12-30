@@ -48,6 +48,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ReinforcementLearning.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MyProjects.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="RaspPage.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -101,6 +107,14 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="wwwroot\labeled_images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\projects_images\Pendulum-v0_random.gif" />
+    <None Include="wwwroot\assets\projects_images\Pendulum-v0__gif__25-th.gif" />
+    <None Include="wwwroot\assets\projects_images\Pendulum-v0__gif__50-th.gif" />
+    <None Include="wwwroot\assets\projects_images\Pendulum-v0__gif__75-th.gif" />
+    <None Include="wwwroot\assets\projects_images\Pendulum-v0__gif__99-th.gif" />
   </ItemGroup>
 
   <ItemGroup>

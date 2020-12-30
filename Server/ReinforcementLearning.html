@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <script language="javascript">
+
+       
+
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        [class*="col-"] {
+            padding: 15px;
+        }
+
+        .col-1 {
+            float: left;
+            width: 15.0%;
+        }
+
+        .col-2 {
+            float: right;
+            width: 30.0%;
+            margin-right: 20px;
+        }
+
+        .col-3 {
+            float: right;
+            width: 10%;
+        }
+
+        .col-4 {
+            width: 33.33%;
+        }
+
+        .col-5 {
+            width: 41.66%;
+        }
+
+        html {
+            font-family: "Lucida Sans", sans-serif;
+        }
+
+        .header {
+            background-color: #9933cc;
+            color: #ffffff;
+            padding: 15px;
+        }
+        #main_info {
+            margin-left: 50px;
+        }
+           #main_info h2{
+                margin-left: 30px;
+            }
+            #main_info p{
+                margin-left: 70px;
+            }
+
+        #pendulum_div{
+            margin-left: 50px;
+            margin-top: 50px;
+        }
+        #pendulum_ac_div {
+            margin-left: 70px;
+        }
+
+    </style>
+
+
+
+    <title>Ivan's Project</title>
+
+</head>
+
+<body>
+    <div class="header">
+        <h1>Projects - Reinforcement Learning</h1>
+    </div>
+
+    <div class="row">
+
+        <div id="main_info">
+            <h1> What is </h1>
+            <h2>1. Machine Learning</h2>
+                <p> - Subset of Artificial Inteligence</p>
+                <p> - Computer algorithms that improve automatically through experience</p>
+
+                <p> Applications of RL: -  <a href="https://towardsdatascience.com/recommender-systems-value-alignment-reinforcement-learning-and-ethics-625eefaaf138">Recommendation systems</a>, <a href="https://en.wikipedia.org/wiki/Email_filtering">Emails filtering</a>,  <a href="https://en.wikipedia.org/wiki/Computer_vision">Computer vision</a>...</p>
+
+                <p> A couple of Short Videos: <a href="https://www.youtube.com/watch?v=HcqpanDadyQ">From Google CP</a>, <a href="https://www.youtube.com/watch?v=ukzFI9rgwfU">From Simplilearn</a></p>
+                <p> Wikipedia explanation: <a href="https://en.wikipedia.org/wiki/Machine_learning">here</a> </p>
+                <p> Very nice exmplanation by IBM: <a href="https://www.ibm.com/cloud/learn/machine-learning">here</a> </p>
+
+            <h2>2. Reinforcement Learning</h2>
+                <p> - Subset of Machine Learning</p>
+                <p> - Usage of software agents to take actions maximizing the reward from the environement</p>
+                <p> - Doesn't require data labeling (decisions based on reward)</p>
+
+                <img src="/assets/projects_images/Reinforcement_learning_diagram.png" alt="Pendulum_random" width=250 style="margin-left: 70px" />
+
+                <p> Video inroduction: <a href="https://www.youtube.com/watch?v=JgvyzIkgxF0">here</a></p>
+                <p> Wikipedia explanation: <a href="https://en.wikipedia.org/wiki/Reinforcement_learning">here</a> </p>
+                <p> Guru99 explanation: <a href="https://www.guru99.com/reinforcement-learning-tutorial.html">here</a> </p>
+                <p> Deepsense explanation: <a href="https://deepsense.ai/what-is-reinforcement-learning-the-complete-guide/">here</a> </p>
+            
+            <h2>3. Open Ai - Gym</h2>
+                <p> - Non-profit research company - focussed on building out AI</p>
+                <p> - Founded by Elon Musk and Sam Altman</p>
+                <p> - Toolkit for developing and comparing reinforcement learning algorithms</p>
+
+                <img src="/assets/projects_images/gym_explanation.gif" alt="Pendulum_random" width=250 style="margin-left: 70px" />
+            
+                <p> Explanation by Medium: <a href="https://medium.com/@ashish_fagna/understanding-openai-gym-25c79c06eccb#:~:text=OpenAI%20Gym%20is%20a%20toolkit,interface%20to%20reinforcement%20learning%20tasks.">here</a> </p>
+                <p> Gym link: <a href="https://gym.openai.com">here</a> </p>
+
+        </div>
+
+        <div id="pendulum_div">
+
+            <h1> Pendulum </h1>
+
+            <div id="pendulum_ac_div">
+
+                <h2> Actor-Critic method solution</h2>
+
+                <img src="/assets/projects_images/Pendulum-v0_random.gif" alt="Pendulum_random" width=250 />
+                <img src="/assets/projects_images/Pendulum-v0__gif__25-th.gif" alt="Pendulum_25" width=250 />
+                <img src="/assets/projects_images/Pendulum-v0__gif__50-th.gif" alt="Pendulum_50" width=250 />
+                <img src="/assets/projects_images/Pendulum-v0__gif__75-th.gif" alt="Pendulum_75" width=250 />
+                <img src="/assets/projects_images/Pendulum-v0__gif__99-th.gif" alt="Pendulum_99" width=250 />
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
