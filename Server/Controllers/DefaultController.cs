@@ -117,6 +117,202 @@ namespace Server.Controllers
                 Content = text
             };
         }
+
+        /*
+
+        [HttpGet("Sifrovacka_registrace")]
+        public ContentResult Sifrovacka_registrace()
+        {
+            string text;
+            var fileStream = new FileStream(@"sifrovacka_registrace.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+        [HttpGet("Sifrovacka")]
+        public ContentResult Sifrovacka()
+        {
+            string text;
+            var fileStream = new FileStream(@"sifrovacka.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+        }
+
+
+        [HttpPut("Sifrovacka_LogIn")]
+        public async Task<string> SifrovackaLogIn(string name, string surname)
+        {
+            bool result = await _chatManager.SifrovackaGetResultLoginAsync(name, surname);
+
+            if (result) return "true";
+            else return "false";
+        }
+
+        [HttpGet("Sifrovacka_Navigace_GetLocation")]
+        public async Task<string> Sifrovacka_Navigace_GetLocation(string name, string surname)
+        {
+            return await _chatManager.SifrovackaNavigaceGetLocation(name, surname);
+
+        }
+
+        [HttpGet("Sifrovacka_Navigace")]
+        public async Task<ContentResult> Navigace()
+        {
+            //var name = Request.Cookies["name"];
+            //var surname = Request.Cookies["surname"];
+
+            //bool result = await _chatManager.SifrovackaGetResultLoginAsync(name, surname);
+
+            //if (result)
+            //{
+            string text;
+            var fileStream = new FileStream(@"sifrovacka.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            //text = text
+            //       .Replace("[NAME]", name)
+            //       .Replace("[SURNAME]", name);
+
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+            
+        }
+        [HttpGet("Sifrovacka_Sifra")]
+        public async Task<ContentResult> Sifra()
+        {
+            string text;
+            var fileStream = new FileStream(@"sifrovacka_sifra.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+
+        }
+        [HttpGet("Sifrovacka_Sifra_GetZadani")]
+        public async Task<Zadani> Sifrovacka_Sifra_GetZadani(string name, string surname)
+        {
+            return await _chatManager.SifrovackaNavigaceGetZadani(name, surname);
+
+        }
+        [HttpGet("Sifrovacka_Sifra_GetSolution")]
+        public async Task<string> Sifrovacka_Sifra_GetSolution(string name, string surname)
+        {
+            return await _chatManager.SifrovackaNavigaceGetSolution(name, surname);
+
+        }
+        [HttpPut("Sifrovacka_Sifra_Submit")]
+        public async Task<string> SifrovackaSifraSubmit(string name, string surname)
+        {
+            return await _chatManager.SifrovackaSifraSubmit(name, surname);
+
+        }
+
+
+        [HttpGet("Sifrovacka_Misto")]
+        public async Task<ContentResult> Misto()
+        {
+            string text;
+            var fileStream = new FileStream(@"sifrovacka_misto.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+
+        }
+        [HttpGet("Sifrovacka_Misto_Get")]
+        public async Task<Misto> Sifrovacka_Misto_Get(string name, string surname)
+        {
+            return await _chatManager.SifrovackaMistoGet(name, surname);
+
+        }
+        
+        */
+        [HttpGet("Sifrovacka_Vitezove")]
+        public async Task<ContentResult> Vitezove()
+        {
+            string text;
+            var fileStream = new FileStream(@"sifrovacka_vitezove.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+
+        }
+
+        [HttpGet("Sifrovacka_Vitezove_Get")]
+        public async Task<Vitezove> Sifrovacka_Vitezove_Get()
+        {
+            return await _chatManager.SifrovackaVitezoveGet();
+
+        }
+
+        [HttpGet("About_Me")]
+        public ContentResult AboutMe()
+        {
+            string text;
+            var fileStream = new FileStream(@"about_me.html", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = text
+            };
+
+        }
+
+
+
         [HttpGet("MyProjects")]
         public ContentResult MyProjects()
         {

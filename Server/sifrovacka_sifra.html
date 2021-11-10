@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/assets/css/styles_sifrovacka.css">
+
+    <script defer src="/assets/js/script_sifrovacka.js"></script>
+
+
+    <title>Šifrovačka</title>
+
+</head>
+
+    <body onload="OnLoadSifra()">
+
+        <div class="header">
+
+            <h1>Třináctá rovnoběžka</h1>
+
+            <h2>Rozlušti šifru a odpověz na otázku</h2>
+
+        </div>
+
+        <div class="zadani" id="zadani_div">
+
+                
+
+        </div>
+
+        <div class="reseni">
+
+            <label>Zadej odpověď:</label>
+
+            <input name="odpoved" id="odpoved" required="">
+
+
+        </div>
+
+
+        <a class="tlacitko" onClick="Zkontrolovat()" id="check_btn">ZKONTROLOVAT!</a>
+
+        <a class="tlacitko" onClick="NapovedaClick()" id="napoveda_btn">NÁPOVĚDA?</a>
+
+        <div class="napoveda_div" id="napoveda1">
+
+        </div>
+        <div class="napoveda_div" id="napoveda2">
+
+        </div>
+        <div class="napoveda_div" id="napoveda3">
+
+        </div>
+
+        <a class="tlacitko" onClick="ZadaniChange()" id="zadani_btn">ZADÁNÍ PRO MENŠÍ</a>
+
+        <div class="user">
+
+            <p class="user_txt">Hraješ pod jménem</p>
+            <p id="user_name"></p>
+
+        </div>
+
+    </body>
+</html>

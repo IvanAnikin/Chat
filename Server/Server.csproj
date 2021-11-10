@@ -48,6 +48,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="sifrovacka_vitezove.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sifrovacka_misto.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sifrovacka_sifra.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sifrovacka_registrace.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="sifrovacka.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ReinforcementLearning.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -106,11 +121,56 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="wwwroot\assets\images\" />
     <Folder Include="wwwroot\labeled_images\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\assets\vendor\aos\aos.js" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\assets\vendor\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\assets\vendor\boxicons\fonts\boxicons.svg" />
+    <None Include="wwwroot\assets\vendor\boxicons\fonts\boxicons.woff2" />
+    <None Include="wwwroot\assets\vendor\counterup\counterup.min.js" />
+    <None Include="wwwroot\assets\vendor\icofont\fonts\icofont.woff2" />
+    <None Include="wwwroot\assets\vendor\isotope-layout\isotope.pkgd.js" />
+    <None Include="wwwroot\assets\vendor\isotope-layout\isotope.pkgd.min.js" />
+    <None Include="wwwroot\assets\vendor\jquery.easing\jquery.easing.min.js" />
+    <None Include="wwwroot\assets\vendor\jquery\jquery.min.js" />
+    <None Include="wwwroot\assets\vendor\jquery\jquery.min.map" />
+    <None Include="wwwroot\assets\vendor\owl.carousel\LICENSE" />
+    <None Include="wwwroot\assets\vendor\owl.carousel\owl.carousel.js" />
+    <None Include="wwwroot\assets\vendor\owl.carousel\owl.carousel.min.js" />
+    <None Include="wwwroot\assets\vendor\owl.carousel\README.md" />
+    <None Include="wwwroot\assets\vendor\php-email-form\validate.js" />
+    <None Include="wwwroot\assets\vendor\typed.js\typed.js" />
+    <None Include="wwwroot\assets\vendor\typed.js\typed.min.js" />
+    <None Include="wwwroot\assets\vendor\typed.js\typed.min.js.map" />
+    <None Include="wwwroot\assets\vendor\venobox\venobox.js" />
+    <None Include="wwwroot\assets\vendor\venobox\venobox.min.js" />
+    <None Include="wwwroot\assets\vendor\waypoints\jquery.waypoints.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\assets\css\styles_sifrovacka.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\assets\css\styles.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\assets\js\script_sifrovacka.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\assets\js\script2.js">

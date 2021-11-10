@@ -61,7 +61,7 @@
         #main_info {
             margin-left: 50px;
         }
-           #main_info h2{
+            #main_info h2{
                 margin-left: 30px;
             }
             #main_info p{
@@ -72,20 +72,49 @@
         #my_solutions_div {
             margin-left: 50px;
             margin-top: 100px;
+            margin-bottom: 100px;
         }
 
         #cart_pole_div {
             margin-left: 50px;
             margin-top: 50px;
         }
-
-        #pendulum_div{
+            #cart_pole_div p {
+                margin-left: 70px;
+            }
+        #cartpole_nn_div {
+            margin-left: 70px;
+        }
+            #cartpole_nn_div p {
+                margin-left: 70px;
+            }
+        #mountain_car_div {
             margin-left: 50px;
             margin-top: 50px;
         }
-        #pendulum_ac_div {
+            #mountain_car_div p {
+                margin-left: 70px;
+            }
+        #mountaincar_ql_div {
             margin-left: 70px;
         }
+        #mountaincar_ql_div P{
+            margin-left: 70px;
+        }
+        #pendulum_div {
+            margin-left: 50px;
+            margin-top: 100px;
+        }
+            #pendulum_div p {
+                margin-left: 70px;
+            }
+        #pendulum_ac_div {
+            margin-left: 70px;
+            margin-top: 50px;
+        }
+            #pendulum_ac_div p{
+                margin-left: 70px;
+            }
 
     </style>
 
@@ -144,15 +173,75 @@
 
             <h1> My solutions </h1>
 
+            <p style="margin-left: 70px"> All of the solutions were written in Python programming language using TensorFlow and TF.Keras Libraries</p>
+
             <div id="cart_pole_div">
 
                 <h2> Cart-Pole problem</h2>
 
-                <div id="pendulum_ac_div">
+                <img src="/assets/projects_images/cart-pole_explanation.gif" alt="Cart-Pole_explanation" width=250 />
+                <p> OpenAi Gym Cart-Pole Link: <a href="https://gym.openai.com/envs/CartPole-v0/">here</a></p>
+                <br>
+                <p> - Pendulum starts upright </p>
+                <p> - The goal is to prevent it from falling over </p>
+                <p> - The system is controlled by applying a force of +1 or -1 to the cart</p>
 
-                    <h3> Neural Network solution </h3>
+                <div id="cartpole_nn_div">
 
-                    
+
+                    <h3 style="margin-top: 50px"> Neural Network solution </h3>
+                    <p> Neural Network explanation: <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">here</a></p>
+
+                    <br><br>
+                    <p><a href="https://github.com/IvanAnikin/ml_games/tree/master/Clean_Results/Cart_Pole/Neural_Network/main.py">My Git solution code link</a></p>
+                    <p> Decreasing training loss during 10 epochs of nn model fitting - accuracy increasing: </p>
+                    <img style="margin-left: 70px" src="/assets/projects_images/cart_pole_training_loss.png" alt="Cart-Pole_random" width=400 />
+
+                    <br><br>
+                    <p> NN Model trained on different ammount of training data accuracy </p>
+                    <img style="display: inline-block;" src="/assets/projects_images/Cart-Pole_random.gif" alt="Cart-Pole_random" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Cart-Pole__0.25.gif" alt="Cart-Pole__0.25" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Cart-Pole__0.50.gif" alt="Cart-Pole__0.50" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Cart-Pole__1.00.gif" alt="Cart-Pole__1.00" width=250 />
+                    <br>
+                    <p style="display: inline-block;"> Random <br> Average score: 20 </p>
+                    <p style="display: inline-block;"> Training data: 2.500  <br> Average score: 120 </p>
+                    <p style="display: inline-block;"> Training data: 5.000 <br> Average score: 190 </p>
+                    <p style="display: inline-block;"> Training data: 10.000 <br> Average score: 240 </p>
+
+                </div>
+            </div>
+
+            <div id="mountain_car_div">
+
+                <h2> Mountain-Car problem</h2>
+                <img src="/assets/projects_images/mountain-car_explanation.gif" alt="Mountain-Car_explanation" width=250 />
+                <p> OpenAi Gym Mountain-Car Link: <a href="https://gym.openai.com/envs/MountainCar-v0">here</a></p>
+                <br>
+                <p> - A car is on a one-dimensional track, positioned between two "mountains" </p>
+                <p> - The goal is to drive up the mountain on the right </p>
+                <p> - The car's engine is not strong enough to scale the mountain in a single pass </p>
+                
+                <div id="mountaincar_ql_div">
+
+                    <h3 style="margin-top: 50px"> Q-Learning method solution </h3>
+                    <p> Q-Learning method explanation: <a href="https://en.wikipedia.org/wiki/Q-learning">here</a>, and <a href="https://www.freecodecamp.org/news/an-introduction-to-q-learning-reinforcement-learning-14ac0b4493cc/#:~:text=Q%2DTable%20is%20just%20a,at%20each%20non%2Dedge%20tile.">here</a></p>
+
+                    <br><br>
+                    <p><a href="https://github.com/IvanAnikin/ml_games/tree/master/Clean_Results/Mountain_Car/Q_Learning">My Git solution code link</a></p>
+
+                    <br><br>
+                    <p> Statistics of average score during 10.000 episodes depending on different Q-Learning method params changing: </p>
+                    <img style="display: inline-block; margin-left: 70px" src="/assets/projects_images/MountainCar_ql_stats_tablesize.png" alt="MountainCar_ql_stats_tablesize" width=500 />
+                    <img style="display: inline-block;" src="/assets/projects_images/MountainCar_ql_stats_discount.png" alt="MountainCar_ql_stats_discount" width=540 />
+                    <img style="display: inline-block;" src="/assets/projects_images/MountainCar_ql_stats_epsilon.png" alt="MountainCar_ql_stats_epsilon" width=580 />
+                    <img style="display: inline-block; margin-left: 70px" src="/assets/projects_images/MountainCar_ql_stats_endepsilon.png" alt="MountainCar_ql_stats_endepsilon" width=540 />
+                    <img style="display: inline-block;" src="/assets/projects_images/MountainCar_ql_stats_lr.png" alt="MountainCar_ql_stats_lr" width=570 />
+
+
+                    <p> Combination of params for Q-Table method training for Mountain-Car problem with highest average score: </p>
+                    <img style="margin-left: 70px" src="/assets/projects_images/MountainCar_ql_stats_bestparams.png" alt="MountainCar_ql_stats_bestparams" width=300 />
+
 
                 </div>
             </div>
@@ -161,15 +250,38 @@
 
                 <h2> Pendulum problem </h2>
 
+                <img src="/assets/projects_images/pendulum_explanation.gif" alt="Pendulum_explanation" width=250 />
+                <p> OpenAi Gym Mountain-Car Link: <a href="https://gym.openai.com/envs/Pendulum-v0/">here</a></p>
+                <br>
+                <p> - The pendulum starts in a random position </p>
+                <p> - The goal is to swing it up so it stays upright </p>
+
                 <div id="pendulum_ac_div">
 
                     <h3> Actor-Critic method solution</h3>
+                    <p> - This method includes 4 Neural Networks which update itself based on state after taking action compared to current state and rewards </p>
+                    <p> Actor-Critic method explanation: <a href="http://rail.eecs.berkeley.edu/deeprlcourse-fa17/f17docs/lecture_5_actor_critic_pdf">here</a>, <a href="https://www.freecodecamp.org/news/an-intro-to-advantage-actor-critic-methods-lets-play-sonic-the-hedgehog-86d6240171d/">here</a> and <a href="http://incompleteideas.net/book/first/ebook/node66.html#:~:text=Actor%2Dcritic%20methods%20are%20TD,independent%20of%20the%20value%20function.&text=This%20scalar%20signal%20is%20the,as%20suggested%20by%20Figure%206.15.">here</a></p>
 
-                    <img src="/assets/projects_images/Pendulum_random.gif" alt="Pendulum_random" width=250 />
-                    <img src="/assets/projects_images/Pendulum__25.gif" alt="Pendulum_25" width=250 />
-                    <img src="/assets/projects_images/Pendulum__50.gif" alt="Pendulum_50" width=250 />
-                    <img src="/assets/projects_images/Pendulum__75.gif" alt="Pendulum_75" width=250 />
-                    <img src="/assets/projects_images/Pendulum__100.gif" alt="Pendulum_99" width=250 />
+                    <br><br>
+                    <p><a href="https://github.com/IvanAnikin/ml_games/tree/master/Clean_Results/Pendulum/ActorCritic">My Git solution code link</a></p>
+
+                    <br><br>
+                    <p> Actor-Critic model trained for different count of episodes: </p>
+                    <img style="display: inline-block;" src="/assets/projects_images/Pendulum_random.gif" alt="Pendulum_random" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Pendulum__25.gif" alt="Pendulum_25" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Pendulum__50.gif" alt="Pendulum_50" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Pendulum__75.gif" alt="Pendulum_75" width=250 />
+                    <img style="display: inline-block;" src="/assets/projects_images/Pendulum__100.gif" alt="Pendulum_99" width=250 />
+                    <br>
+                    <p style="display: inline-block;"> Random       <br> Average score: -1600 </p>
+                    <p style="display: inline-block;"> Episode: 25  <br> Average score: -300 </p>
+                    <p style="display: inline-block;"> Episode: 50  <br> Average score: -200 </p>
+                    <p style="display: inline-block;"> Episode: 75  <br> Average score: -250 </p>
+                    <p style="display: inline-block;"> Episode: 100 <br> Average score: -180 </p>
+
+                    <br><br>
+                    <p> Accuracy improvement during episodes: </p>
+                    <img style="display: inline-block; margin-left: 70px" src="/assets/projects_images/pendulum_score.png" alt="Pendulum_99" width=500 />
 
                 </div>
             </div>

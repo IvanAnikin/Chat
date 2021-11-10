@@ -232,6 +232,29 @@ namespace Server
         }
     }
 
+    public class Zadani
+    {
+        public string zadani;
+        public string zadaniMensi;
+        public string reseni1;
+        public string reseni2;
+        public string napoveda1;
+        public string napoveda2;
+        public string napoveda3;
+    }
+
+    public class Misto
+    {
+        public string nazev;
+        public string popis;
+    }
+
+    public class Vitezove
+    {
+        public String[] seznam_jmen;
+        public String[] seznam_prijmeni;
+    }
+
     public interface IChatManager
     {
         Task StoreMessageAsync(string chatName, Message message, string guid);
@@ -267,5 +290,14 @@ namespace Server
         Task<UserTable> GetUserByLogin(string login);
         Task<string> ChangeUserPictureNew(string login, string pictureName);
         Task<string> ChangeUserNickname(string login, string nickname);
+
+
+        Task<bool> SifrovackaGetResultLoginAsync(string name, string surname);
+        Task<string> SifrovackaNavigaceGetLocation(string name, string surname);
+        Task<Zadani> SifrovackaNavigaceGetZadani(string name, string surname);
+        Task<string> SifrovackaNavigaceGetSolution(string name, string surname);
+        Task<string> SifrovackaSifraSubmit(string name, string surname);
+        Task<Misto> SifrovackaMistoGet(string name, string surname);
+        Task<Vitezove> SifrovackaVitezoveGet();
     }    
 }

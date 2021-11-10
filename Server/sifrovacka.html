@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/assets/css/styles_sifrovacka.css">
+
+    <script defer src="/assets/js/script_sifrovacka.js"></script>
+
+
+    <title>Šifrovačka</title>
+
+</head>
+
+    <body onload="OnLoad()">
+
+        <div class="header">
+
+            <h1>Třináctá rovnoběžka</h1>
+
+            <h2>Hledej další stanoviště podle souřadnic</h2>
+
+        </div>
+
+        <div class="location">
+
+            <p class="location_txt" id="location_txt"></p>
+
+        </div>
+
+        <div class="maps">
+
+            <div class="map">
+
+                <a class="aplikace" id="mapycz_a" target="_blank">
+                    <img class="maps_img" src="/assets/mapycz.png">
+                    Otevřít v Mapy.cz
+                </a>
+
+            </div>
+
+            <div class="map">
+
+                <a class="aplikace" id="googlemaps_a" target="_blank">
+                    <img class="maps_img" src="/assets/googlemaps.png">
+                    Otevřít v Google Maps
+                </a>
+
+            </div>
+
+        </div>
+
+        <a class="tlacitko" onClick="OnSpotClick()">JSEM NA MÍSTĚ!</a>
+
+
+        <div class="user">
+
+            <p class="user_txt">Hraješ pod jménem</p>
+            <p id="user_name"></p>
+
+        </div>
+
+
+    </body>
+</html>

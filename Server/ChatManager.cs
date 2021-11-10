@@ -872,5 +872,652 @@ namespace Server
             return entities;
         }
 
+
+
+        //SIFROVACKA
+
+        class Sifrovacka_user : TableEntity
+        {
+
+            private string name;
+            private string surname;
+            private int stage;
+
+            public void AssignRowKey()
+            {
+                this.RowKey = name;
+            }
+            public void AssignPartitionKey()
+            {
+                this.PartitionKey = surname;
+            }
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+
+                set
+                {
+                    name = value;
+                }
+            }
+            public string Surname
+            {
+                get
+                {
+                    return surname;
+                }
+
+                set
+                {
+                    surname = value;
+                }
+            }
+            public int Stage
+            {
+                get
+                {
+                    return stage;
+                }
+
+                set
+                {
+                    stage = value;
+                }
+            }
+
+        }
+
+
+        class Sifrovacka_stage : TableEntity
+        {
+
+            private string Stage;
+            private string Position;
+            private string Name;
+            private string Popis;
+
+            public void AssignRowKey()
+            {
+                this.RowKey = Stage;
+            }
+            public void AssignPartitionKey()
+            {
+                this.PartitionKey = Stage;
+            }
+            public string stage
+            {
+                get
+                {
+                    return Stage;
+                }
+
+                set
+                {
+                    Stage = value;
+                }
+            }
+            public string position
+            {
+                get
+                {
+                    return Position;
+                }
+
+                set
+                {
+                    Position = value;
+                }
+            }
+            public string name
+            {
+                get
+                {
+                    return Name;
+                }
+
+                set
+                {
+                    Name = value;
+                }
+            }
+            public string popis
+            {
+                get
+                {
+                    return Popis;
+                }
+
+                set
+                {
+                    Popis = value;
+                }
+            }
+        }
+
+        class Sifrovacka_zadani : TableEntity
+        {
+
+            private string Stage;
+            private string Zadani;
+            private string ZadaniMensi;
+            private string Reseni1;
+            private string Reseni2;
+            private string Napoveda1;
+            private string Napoveda2;
+            private string Napoveda3;
+
+            public void AssignRowKey()
+            {
+                this.RowKey = Stage;
+            }
+            public void AssignPartitionKey()
+            {
+                this.PartitionKey = Stage;
+            }
+            public string stage
+            {
+                get
+                {
+                    return Stage;
+                }
+
+                set
+                {
+                    Stage = value;
+                }
+            }
+            public string zadani
+            {
+                get
+                {
+                    return Zadani;
+                }
+
+                set
+                {
+                    Zadani = value;
+                }
+            }
+
+            public string zadaniMensi
+            {
+                get
+                {
+                    return ZadaniMensi;
+                }
+
+                set
+                {
+                    ZadaniMensi = value;
+                }
+            }
+
+            public string reseni1
+            {
+                get
+                {
+                    return Reseni1;
+                }
+
+                set
+                {
+                    Reseni1 = value;
+                }
+            }
+
+            public string reseni2
+            {
+                get
+                {
+                    return Reseni2;
+                }
+
+                set
+                {
+                    Reseni2 = value;
+                }
+            }
+
+            public string napoveda1
+            {
+                get
+                {
+                    return Napoveda1;
+                }
+
+                set
+                {
+                    Napoveda1 = value;
+                }
+            }
+            public string napoveda2
+            {
+                get
+                {
+                    return Napoveda2;
+                }
+
+                set
+                {
+                    Napoveda2 = value;
+                }
+            }
+            public string napoveda3
+            {
+                get
+                {
+                    return Napoveda3;
+                }
+
+                set
+                {
+                    Napoveda3 = value;
+                }
+            }
+        }
+
+
+
+        public async Task<bool> SifrovackaGetResultLoginAsync(string name, string surname)
+        {
+
+            try
+            {
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = name;
+                string rowKey = surname;
+
+
+                TableOperation retrieve = TableOperation.Retrieve<UserTable>(partitionKey, rowKey);
+
+                TableResult result = await table.ExecuteAsync(retrieve);
+
+                if (result.Result != null)
+                {
+                    Sifrovacka_user user = result.Result as Sifrovacka_user;
+
+                    return true;
+
+                }
+                else
+                {
+
+                    Sifrovacka_user user = new Sifrovacka_user();
+
+                    user.Name = name;
+                    user.Surname = surname;
+                    user.Stage = 1;
+                    user.AssignPartitionKey();
+                    user.AssignRowKey();
+
+                    TableOperation tableOperation = TableOperation.Insert(user);
+                    await table.ExecuteAsync(tableOperation);
+
+                    return true;
+
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
+
+        public async Task<string> SifrovackaNavigaceGetLocation(string name, string surname)
+        {
+
+            try
+            {
+                
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = surname;
+                string rowKey = name;
+
+
+                //if (partitionKey == name) return "partitionKey == name";
+                //else if(rowKey == surname) return "rowKey == surname";
+                //else return "false";
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                /*
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where( 
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey));
+                */
+
+                TableContinuationToken token = null;
+
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    //return rowKey;
+                    //return user.Name;
+
+                    string partitionKeyStages = user.Stage.ToString();
+                    string rowKeyStages = user.Stage.ToString();
+
+                    var tableStages = tableClient.GetTableReference("sifrovackaStages");
+
+                    TableQuery<Sifrovacka_stage> rangeQueryStages = new TableQuery<Sifrovacka_stage>().Where(
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKeyStages));
+
+                   
+
+                    TableContinuationToken tokenStages = null;
+                    foreach (Sifrovacka_stage stage in await tableStages.ExecuteQuerySegmentedAsync(rangeQueryStages, tokenStages))
+                    {
+                        //return rowKeyStages;
+                        //return user.Stage.ToString();
+                        return stage.position;
+                        //return 3.ToString();
+                    }
+                }
+                return "user not found";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+        }
+
+        public async Task<Zadani> SifrovackaNavigaceGetZadani(string name, string surname)
+        {
+
+            try
+            {
+
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = surname;
+                string rowKey = name;
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                TableContinuationToken token = null;
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    string partitionKeyStages = user.Stage.ToString();
+                    string rowKeyStages = user.Stage.ToString();
+
+                    var tableStages = tableClient.GetTableReference("sifrovackaZadani");
+
+                    TableQuery<Sifrovacka_zadani> rangeQueryStages = new TableQuery<Sifrovacka_zadani>().Where(
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKeyStages));
+
+
+
+                    TableContinuationToken tokenStages = null;
+                    foreach (Sifrovacka_zadani stage in await tableStages.ExecuteQuerySegmentedAsync(rangeQueryStages, tokenStages))
+                    {
+                        //return user.Stage.ToString();
+                        Zadani zadani = new Zadani();
+
+                        //return stage.napoveda1;
+
+                        zadani.zadani = stage.zadani;
+                        zadani.zadaniMensi = stage.zadaniMensi;
+                        zadani.reseni1 = stage.reseni1;
+                        zadani.reseni2 = stage.reseni2;
+                        zadani.napoveda1 = stage.napoveda1;
+                        zadani.napoveda2 = stage.napoveda2;
+                        zadani.napoveda3 = stage.napoveda3;
+
+                        return zadani;
+
+                    }
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<string> SifrovackaNavigaceGetSolution(string name, string surname)
+        {
+
+            try
+            {
+
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = surname;
+                string rowKey = name;
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                TableContinuationToken token = null;
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    string partitionKeyStages = user.Stage.ToString();
+                    string rowKeyStages = user.Stage.ToString();
+
+                    var tableStages = tableClient.GetTableReference("sifrovackaZadani");
+
+                    TableQuery<Sifrovacka_zadani> rangeQueryStages = new TableQuery<Sifrovacka_zadani>().Where(
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKeyStages));
+
+
+
+                    TableContinuationToken tokenStages = null;
+                    foreach (Sifrovacka_zadani stage in await tableStages.ExecuteQuerySegmentedAsync(rangeQueryStages, tokenStages))
+                    {
+                        //return user.Stage.ToString();
+                        return stage.zadani;
+
+                    }
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<string> SifrovackaSifraSubmit(string name, string surname)
+        {
+            try
+            {
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = surname;
+                string rowKey = name;
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                TableContinuationToken token = null;
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+
+                    if(user.Stage == 1)
+                    {
+                        //Random rnd = new Random();
+                        //user.Stage += rnd.Next(1, 3);
+                        user.Stage += 1;
+                    }
+                    else
+                    {
+                        user.Stage += 1;
+                    }
+
+                    TableOperation insertOrReplaceOperation = TableOperation.InsertOrReplace(user);
+
+                    TableResult result = await table.ExecuteAsync(insertOrReplaceOperation);
+
+                    return result.ToString();
+                }
+                return "didnt find user";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+        }
+
+
+        public async Task<Misto> SifrovackaMistoGet(string name, string surname)
+        {
+            try
+            {
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = surname;
+                string rowKey = name;
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                TableContinuationToken token = null;
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    string partitionKeyStages = user.Stage.ToString();
+                    string rowKeyStages = user.Stage.ToString();
+
+                    var tableStages = tableClient.GetTableReference("sifrovackaStages");
+
+                    TableQuery<Sifrovacka_stage> rangeQueryStages = new TableQuery<Sifrovacka_stage>().Where(
+                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKeyStages));
+
+
+
+                    TableContinuationToken tokenStages = null;
+                    foreach (Sifrovacka_stage stage in await tableStages.ExecuteQuerySegmentedAsync(rangeQueryStages, tokenStages))
+                    {
+                        //return user.Stage.ToString();
+                        Misto misto = new Misto();
+
+                        //return stage.napoveda1;
+
+                        misto.nazev = stage.name;
+                        misto.popis = stage.popis;
+
+                        return misto;
+
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        public async Task<Vitezove> SifrovackaVitezoveGet()
+        {
+            try
+            {
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                            TableQuery.GenerateFilterConditionForInt("Stage", QueryComparisons.Equal, 8)
+                    );
+                
+                Vitezove vitezove = new Vitezove();
+                List<String> jmena = new List<string>();
+                List<String> prijmeni = new List<string>();
+                int index = 0;
+                TableContinuationToken token = null;
+                TableQuerySegment<Sifrovacka_user> result = await table.ExecuteQuerySegmentedAsync(rangeQuery, token);
+                foreach (Sifrovacka_user user in result)
+                {
+                    jmena.Add(user.Name);
+                    prijmeni.Add(user.Surname);
+
+                    index++;
+                }
+
+                String[] str = jmena.ToArray();
+                String[] str2 = prijmeni.ToArray();
+
+                vitezove.seznam_jmen = str;
+                vitezove.seznam_prijmeni = str2;
+
+                return vitezove;
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> Sifrovacka_Test()
+        {
+            try
+            {
+
+                var table = tableClient.GetTableReference("sifrovacka");
+
+                string partitionKey = "";
+                string rowKey = "";
+
+                TableQuery<Sifrovacka_user> rangeQuery = new TableQuery<Sifrovacka_user>().Where(
+                        TableQuery.CombineFilters(
+                            TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey),
+                            TableOperators.And,
+                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey)
+                        )
+                    );
+
+                TableContinuationToken token = null;
+                foreach (Sifrovacka_user user in await table.ExecuteQuerySegmentedAsync(rangeQuery, token))
+                {
+                    return user.Name;
+                }
+
+                    return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
